@@ -13,7 +13,7 @@ export default function ProjectList({ items }: Props) {
     <div className="space-y-5">
       {items.map(({ project, stats }, index) => (
         <Reveal key={project.slug} delay={index * 0.08}>
-          <ProjectCard project={project} stats={stats} index={index} />
+          <ProjectCard project={project} stats={stats} />
         </Reveal>
       ))}
     </div>

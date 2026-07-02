@@ -43,14 +43,13 @@ export default async function Home() {
         <Section id="work" index="02" title="Selected Work">
           <Reveal>
             <p className="mb-8 max-w-xl leading-relaxed text-dim">
-              Everything here was built end-to-end —{" "}
+              Three products I took from problem to live users — owning{" "}
               <strong className="font-medium text-ink">
-                not specced and handed off
+                discovery, design, and delivery
               </strong>
-              . Each one broke somewhere; <em>HANDLED</em> is where, and what I
-              did about it.{" "}
+              , not just the spec.{" "}
               <strong className="font-medium text-ink">
-                All three are live — open a demo and try it.
+                All three are live — open a demo and try one.
               </strong>
             </p>
           </Reveal>

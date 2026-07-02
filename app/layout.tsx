@@ -20,12 +20,12 @@ const description = `${profile.name} — ${profile.pitch}`;
 export const metadata: Metadata = {
   metadataBase: new URL(profile.siteUrl),
   title: {
-    default: `${profile.name} — Builder`,
+    default: `${profile.name} — Product Manager & Builder`,
     template: `%s — ${profile.name}`,
   },
   description,
   openGraph: {
-    title: `${profile.name} — Builder`,
+    title: `${profile.name} — Product Manager & Builder`,
     description,
     url: profile.siteUrl,
     siteName: profile.name,
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${profile.name} — Builder`,
+    title: `${profile.name} — Product Manager & Builder`,
     description,
   },
 };

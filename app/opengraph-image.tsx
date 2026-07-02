@@ -24,8 +24,16 @@ export default function OpenGraphImage() {
           fontFamily: "monospace",
         }}
       >
-        <div style={{ display: "flex", fontSize: 28, color: "#6c93b4" }}>
-          <span style={{ color: "#5c6268" }}>$&nbsp;</span>whoami
+        <div
+          style={{
+            display: "flex",
+            fontSize: 24,
+            letterSpacing: 4,
+            textTransform: "uppercase",
+            color: "#6c93b4",
+          }}
+        >
+          {profile.kicker}
         </div>
 
         <div style={{ display: "flex", flexDirection: "column" }}>

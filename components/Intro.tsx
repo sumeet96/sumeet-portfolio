@@ -50,12 +50,9 @@ export default function Intro() {
   return (
     <div className="flex h-full flex-col justify-between gap-10">
       <div>
-        {/* "$ whoami" prompt — the identity device carried over from v1. */}
-        <p className="mb-4 font-mono text-sm text-blue">
-          <span aria-hidden="true" className="text-dimmer">
-            ${" "}
-          </span>
-          whoami
+        {/* Professional kicker (replaces the old "$ whoami" prompt). */}
+        <p className="mb-4 font-mono text-xs uppercase tracking-[0.2em] text-blue">
+          {profile.kicker}
         </p>
         <h1 className="text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
           {profile.name}
