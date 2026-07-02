@@ -67,7 +67,7 @@ export const projects: Project[] = [
     name: "showzzy",
     tagline: "AR-enabled movie ticketing that never double-books a seat.",
     repo: "sumeet96/showzzy",
-    repoPrivate: true,
+    repoPrivate: false,
     stack: ["AR", "Stripe", "QR ticketing", "LLM", "Admin dashboard"],
     observed:
       "Seat booking looks solved — until two people try to hold the same seat at the same moment.",
