@@ -92,13 +92,14 @@ export default function ProjectCard({ project, stats, index }: Props) {
           )}
         </div>
 
-        {stats && (
+        {stats && (stats.language || stats.pushedAt) && (
           <p className="font-mono text-[11px] text-dimmer">
-            <span aria-label={`${stats.stars} GitHub stars`}>
-              ★ {stats.stars}
-            </span>
-            {stats.language && <> · {stats.language}</>}
-            {stats.pushedAt && <> · updated {relativeTime(stats.pushedAt)}</>}
+            {[
+              stats.language,
+              stats.pushedAt && `updated ${relativeTime(stats.pushedAt)}`,
+            ]
+              .filter(Boolean)
+              .join(" · ")}
           </p>
         )}
       </footer>
