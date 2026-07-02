@@ -48,7 +48,10 @@ export default async function Home() {
                 not specced and handed off
               </strong>
               . Each one broke somewhere; <em>HANDLED</em> is where, and what I
-              did about it.
+              did about it.{" "}
+              <strong className="font-medium text-ink">
+                All three are live — open a demo and try it.
+              </strong>
             </p>
           </Reveal>
           <ProjectList items={work} />

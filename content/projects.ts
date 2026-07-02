@@ -34,6 +34,7 @@ export const projects: Project[] = [
     name: "anveshan-cx",
     tagline: "LLM review intelligence that founders actually read.",
     repo: "sumeet96/anveshan-cx",
+    demoUrl: "https://anveshan-cx.streamlit.app/",
     stack: [
       "Python",
       "OpenAI",
@@ -54,6 +55,7 @@ export const projects: Project[] = [
     name: "pmg-chatbot",
     tagline: "The mess-menu assistant students actually use.",
     repo: "sumeet96/pmg-chatbot",
+    demoUrl: "https://pmg-chatbot.vercel.app/",
     stack: ["React", "TypeScript", "Supabase", "Gemini", "Vitest"],
     observed:
       "A hostel mess runs on coordination nobody owns: what's on the menu today, who's eating, where complaints go to die.",
@@ -67,7 +69,7 @@ export const projects: Project[] = [
     name: "showzzy",
     tagline: "AR-enabled movie ticketing that never double-books a seat.",
     repo: "sumeet96/showzzy",
-    repoPrivate: false,
+    demoUrl: "https://showzzy.lovable.app",
     stack: ["AR", "Stripe", "QR ticketing", "LLM", "Admin dashboard"],
     observed:
       "Seat booking looks solved — until two people try to hold the same seat at the same moment.",

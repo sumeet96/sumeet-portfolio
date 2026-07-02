@@ -64,30 +64,35 @@ export default function ProjectCard({ project, stats, index }: Props) {
         ))}
       </dl>
 
-      <footer className="mt-6 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-dashed border-rule pt-4">
-        <div className="flex flex-wrap gap-x-6 gap-y-2">
+      <footer className="mt-6 flex flex-wrap items-center justify-between gap-x-6 gap-y-4 border-t border-dashed border-rule pt-5">
+        <div className="flex flex-wrap items-center gap-3">
+          {project.demoUrl && (
+            <a
+              href={project.demoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-sm bg-amber px-3.5 py-2 font-mono text-xs font-semibold text-bg transition-colors hover:bg-amber/85"
+            >
+              <span aria-hidden="true" className="text-sm leading-none">
+                ▸
+              </span>
+              Live demo
+              <span aria-hidden="true">↗</span>
+            </a>
+          )}
           {project.repoPrivate ? (
             <span className="font-mono text-xs text-dimmer">
-              private build — code walkthrough on request
+              private build — walkthrough on request
             </span>
           ) : (
             <a
               href={`https://github.com/${project.repo}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="border-b border-dimmer pb-px font-mono text-xs text-ink transition-colors hover:border-amber hover:text-amber"
+              className="inline-flex items-center gap-1.5 rounded-sm border border-rule px-3.5 py-2 font-mono text-xs text-ink transition-colors hover:border-amber hover:text-amber"
             >
-              → view repo
-            </a>
-          )}
-          {project.demoUrl && (
-            <a
-              href={project.demoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="border-b border-dimmer pb-px font-mono text-xs text-ink transition-colors hover:border-amber hover:text-amber"
-            >
-              → live demo
+              Source
+              <span aria-hidden="true">↗</span>
             </a>
           )}
         </div>
