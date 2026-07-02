@@ -1,6 +1,6 @@
 # sumeet-portfolio
 
-Personal portfolio of **Sumeet Mohanty** — live at
+Personal portfolio of **Sumeet Mohanty** - live at
 [sumeet-portfolio-eight.vercel.app](https://sumeet-portfolio-eight.vercel.app).
 
 Next.js (App Router) + TypeScript + Tailwind CSS, deployed on Vercel.
