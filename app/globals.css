@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens — carried over from the original build-log site so the
+ * identity stays continuous. Exposed to Tailwind (bg-bg, text-ink,
+ * border-rule, text-amber, …) via the v4 @theme block.
+ */
+@theme {
+  --color-bg: #0d0f12;
+  --color-panel: #15181c;
+  --color-panel-hover: #191d22;
+  --color-rule: #262b31;
+  --color-rule-soft: #1d2126;
+  --color-ink: #e7e4dc;
+  --color-dim: #8b9199;
+  --color-dimmer: #5c6268;
+  --color-amber: #e3a548;
+  --color-rust: #c1573d;
+  --color-blue: #6c93b4;
+
+  /* Font variables are injected by next/font in app/layout.tsx. */
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Consolas,
+    monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-amber) 30%, transparent);
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-amber);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
