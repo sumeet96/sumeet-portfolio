@@ -92,7 +92,7 @@ export const projects: Project[] = [
     problem:
       "India’s ~₹18,000 Cr movie business still runs on physical counters once you leave the metros, and the big booking apps all fight over the same high-spend multiplex crowd. That leaves single-screen cinemas and student hubs — a real, sizeable segment — poorly served.",
     approach:
-      "Working in a five-person product capstone, I drove the craft that turns a market into a product: sizing the opportunity (₹18,000 Cr TAM down to a focused ₹450 Cr beachhead), then funnelling ~50 candidate features through a Kano survey and value–effort scoring, and cutting crowd-pleasers like price-drop alerts and multi-language UI with evidence when they failed the test. Capacity planning fixed a shippable 18-feature MVP, and ship decisions ran on a Bayesian A/B rule (adopt the variant only when P(B > A) ≥ 95%).",
+      "I took it from market to product end to end: sizing the opportunity (₹18,000 Cr TAM down to a focused ₹450 Cr beachhead), then funnelling ~50 candidate features through a Kano survey and value–effort scoring, and cutting crowd-pleasers like price-drop alerts and multi-language UI with evidence when they failed the test. Capacity planning fixed a shippable 18-feature MVP, and ship decisions ran on a Bayesian A/B rule (adopt the variant only when P(B > A) ≥ 95%).",
     impact:
       "A concept-to-commercialization exercise carried end to end — market sizing, prioritization, and a validated, hi-fi clickable prototype (showzzy.lovable.app) rather than a slide deck. It’s a prototype, not a live commercial product, but it shows the full arc of the decisions a PM actually owns.",
   },
