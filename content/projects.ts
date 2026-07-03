@@ -81,19 +81,19 @@ export const projects: Project[] = [
   {
     slug: "showzzy",
     name: "showzzy",
-    tagline: "A movie-booking experience designed around clarity and trust.",
+    tagline: "Market sizing to a clickable MVP: a product bet on India’s underserved single screens.",
     repo: "sumeet96/showzzy",
     demoUrl: "https://showzzy.lovable.app",
     // Add a screenshot: drop the file at public/images/showzzy.png and
     // uncomment the two lines below.
     // image: "/images/showzzy.png",
     // imageAlt: "showzzy movie ticketing platform",
-    stack: ["AR preview", "Stripe", "QR ticketing", "Admin dashboard"],
+    stack: ["TAM–SAM–SOM", "Kano model", "Value–effort scoring", "Bayesian A/B", "Hi-fi prototype"],
     problem:
-      "Online seat booking looks solved, yet the experience still frustrates: buyers can’t tell what they’re really paying for, and clarity and safety tend to be afterthoughts.",
+      "India’s ~₹18,000 Cr movie business still runs on physical counters once you leave the metros, and the big booking apps all fight over the same high-spend multiplex crowd. That leaves single-screen cinemas and student hubs — a real, sizeable segment — poorly served.",
     approach:
-      "I shaped a booking flow built to remove that friction — an AR seat preview so buyers see the exact view before paying, Stripe checkout, instant QR tickets, and safety-conscious seating options — with an admin side to manage listings and shows.",
+      "Working in a five-person product capstone, I drove the craft that turns a market into a product: sizing the opportunity (₹18,000 Cr TAM down to a focused ₹450 Cr beachhead), then funnelling ~50 candidate features through a Kano survey and value–effort scoring, and cutting crowd-pleasers like price-drop alerts and multi-language UI with evidence when they failed the test. Capacity planning fixed a shippable 18-feature MVP, and ship decisions ran on a Bayesian A/B rule (adopt the variant only when P(B > A) ≥ 95%).",
     impact:
-      "A concept-to-clickable product that demonstrates end-to-end product thinking across UX, payments, and trust. (Scope under review against the original brief — copy to be refined.)",
+      "A concept-to-commercialization exercise carried end to end — market sizing, prioritization, and a validated, hi-fi clickable prototype (showzzy.lovable.app) rather than a slide deck. It’s a prototype, not a live commercial product, but it shows the full arc of the decisions a PM actually owns.",
   },
 ];
