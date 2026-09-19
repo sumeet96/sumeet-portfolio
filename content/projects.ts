@@ -43,6 +43,25 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    slug: "gamification-platform",
+    name: "gamification-platform",
+    tagline: "Adaptive, AI-orchestrated learning engine engineered for graduate business education.",
+    repo: "sumeet96/gamification-platform",
+    repoPrivate: true,
+    demoUrl: "https://gamification-platform-six.vercel.app",
+    // Add a screenshot: drop the file at public/images/gamification-platform.png and
+    // uncomment the two lines below.
+    // image: "/images/gamification-platform.png",
+    // imageAlt: "AI-personalized gamified learning platform interface",
+    stack: ["Next.js", "PostgreSQL (Neon)", "Gemini", "TypeScript", "Tailwind CSS", "Vercel"],
+    problem:
+      "Conventional LMS platforms treat business education as static slide decks, resulting in low voluntary engagement and zero visibility into where MBA students experience conceptual friction. Meanwhile, academic behavioral research lacked rigorous telemetry to measure student persistence.",
+    approach:
+      "I architected and shipped an adaptive learning platform featuring 5 distinct game mechanics (Connections, Crossword, Match, Word, Quiz) powered by an LLM pipeline that extracts key concepts from course packs with human-in-the-loop instructor approval. Instrumented granular behavioral telemetry to capture voluntary persistence, round-level interactions, and abandonment signals.",
+    impact:
+      "Deployed live to Vercel for an XLRI classroom research pilot. Replaces passive reading with interactive, high-retention gameplay while generating verifiable experimental data on learning behavior and student persistence.",
+  },
+  {
     slug: "anveshan-cx",
     name: "anveshan-cx",
     tagline: "Turning a flood of customer reviews into decisions founders can act on.",

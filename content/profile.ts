@@ -15,7 +15,7 @@ export const profile = {
   kicker: "Product · Strategy · Build",
 
   about: [
-    "I'm a recent MBA from XLRI Jamshedpur who builds the products I propose. I start where the business actually hurts — a manual step, a broken hand-off, an unmet customer need — frame the problem, design the solution, and carry it all the way to live users. Recent work spans an LLM tool that turns customer reviews into weekly founder briefs, a campus assistant students use every day, and an AR-enabled ticketing flow with real payments.",
+    "I'm a recent MBA from XLRI Jamshedpur who builds the products I propose. I start where the business actually hurts — a manual step, a broken hand-off, an unmet customer need — frame the problem, design the solution, and carry it all the way to live users. Recent work spans an adaptive AI gamification platform for graduate business education, an LLM tool that turns customer reviews into weekly founder briefs, a campus assistant students use every day, and an entertainment ticketing MVP.",
     "What sets me apart is range: I can sit in a strategy conversation and a build sprint in the same afternoon. I care about the things that decide whether a product works in the real world — sharp problem definition, the right scope, trustworthy data, and adoption — not just the deck that describes them.",
   ],
 
