@@ -7,6 +7,7 @@ import Socials from "./Socials";
 const NAV = [
   { id: "about", label: "About" },
   { id: "work", label: "Selected Work" },
+  { id: "teardowns", label: "Teardowns" },
   { id: "skills", label: "Skills" },
   { id: "contact", label: "Contact" },
 ] as const;

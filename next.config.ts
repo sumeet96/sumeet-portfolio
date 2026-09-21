@@ -1,7 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  rewrites: async () => [
+    {
+      source: "/teardowns/ownly",
+      destination: "/teardowns/ownly/index.html",
+    },
+  ],
 };
 
 export default nextConfig;

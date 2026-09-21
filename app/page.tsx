@@ -2,8 +2,10 @@ import Intro from "@/components/Intro";
 import ProjectList from "@/components/ProjectList";
 import Reveal from "@/components/Reveal";
 import Section from "@/components/Section";
+import TeardownList from "@/components/TeardownList";
 import { profile } from "@/content/profile";
 import { projects } from "@/content/projects";
+import { teardowns } from "@/content/teardowns";
 import { getRepoStats } from "@/lib/github";
 
 /**
@@ -56,7 +58,17 @@ export default async function Home() {
           <ProjectList items={work} />
         </Section>
 
-        <Section id="skills" index="03" title="Skills">
+        <Section id="teardowns" index="03" title="Product Teardowns">
+          <Reveal>
+            <p className="mb-8 max-w-xl leading-relaxed text-dim">
+              Deep-dive breakdowns on market dynamics, pricing psychology,
+              and systems mechanics — analyzing how challenger products disrupt incumbent duopolies.
+            </p>
+          </Reveal>
+          <TeardownList items={teardowns} />
+        </Section>
+
+        <Section id="skills" index="04" title="Skills">
           <div className="grid gap-x-10 gap-y-8 sm:grid-cols-2">
             {profile.skills.map(({ group, items }, index) => (
               <Reveal key={group} delay={index * 0.05}>
@@ -78,7 +90,7 @@ export default async function Home() {
           </div>
         </Section>
 
-        <Section id="contact" index="04" title="Contact">
+        <Section id="contact" index="05" title="Contact">
           <Reveal>
             <p className="max-w-xl leading-relaxed text-dim">
               Building something with a manual step nobody&apos;s automated

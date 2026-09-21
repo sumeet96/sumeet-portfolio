@@ -1,0 +1,2601 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OWNLY by Rapido — Executive Product & Systems Teardown</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            canvas: '#0B0D13',
+            card: '#131722',
+            cardSubtle: '#181E2C',
+            cardHover: '#1F273B',
+            borderDark: '#222838',
+            rapidoYellow: '#FFD600',
+            rapidoYellowHover: '#E6C200',
+            jetBlack: '#111111',
+            ownlyPink: '#FF1E6A',
+            ownlyPinkDark: '#C7004C',
+            ownlyPinkHover: '#E0155A',
+            duopolyRed: '#EF4444',
+            slateText: '#94A3B8',
+            slateLight: '#FFFFFF',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0D13;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #222838;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    .glow-yellow {
+      box-shadow: 0 0 25px -5px rgba(255, 214, 0, 0.35);
+    }
+    .glow-pink {
+      box-shadow: 0 0 25px -5px rgba(255, 30, 106, 0.35);
+    }
+    .custom-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 8px;
+      border-radius: 4px;
+      background: #222838;
+      outline: none;
+    }
+    .custom-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #FF1E6A;
+      cursor: pointer;
+      box-shadow: 0 0 14px rgba(255, 30, 106, 0.7);
+      border: 2px solid #FFFFFF;
+    }
+    .custom-slider::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #FF1E6A;
+      cursor: pointer;
+      box-shadow: 0 0 14px rgba(255, 30, 106, 0.7);
+      border: 2px solid #FFFFFF;
+    }
+    .roadmap-cb {
+      accent-color: #FF1E6A;
+    }
+  </style>
+</head>
+
+<body class="bg-canvas text-slateLight font-sans antialiased min-h-screen selection:bg-ownlyPink/30 selection:text-white">
+
+  <!-- Sticky Top Navigation -->
+  <header class="sticky top-0 z-50 backdrop-blur-xl bg-canvas/85 border-b border-borderDark">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="flex items-center">
+          <span class="text-xl font-extrabold tracking-tight text-white flex items-center">
+            <span class="text-ownlyPink">OWNLY</span>
+            <span class="ml-2 text-xs font-bold px-2 py-0.5 rounded bg-rapidoYellow text-jetBlack border border-rapidoYellow">
+              by Rapido
+            </span>
+          </span>
+        </div>
+        <span class="text-slate-600 hidden md:inline">|</span>
+        <span class="text-xs font-mono text-slateText hidden md:inline tracking-wider uppercase">
+          Product & Systems Teardown
+        </span>
+      </div>
+
+      <!-- Quick Nav Links -->
+      <nav class="hidden lg:flex items-center space-x-5 text-xs font-medium text-slateText">
+        <a href="#bangalore-milestones" class="hover:text-rapidoYellow transition-colors">Bangalore Metrics</a>
+        <a href="#ownly-promise" class="hover:text-ownlyPink transition-colors">The Ownly Promise</a>
+        <a href="#dish-comparison" class="hover:text-ownlyPink transition-colors">Dish Audits</a>
+        <a href="#economics" class="hover:text-ownlyPink transition-colors">Unit Economics</a>
+        <a href="#demand-fleet" class="hover:text-ownlyPink transition-colors">Fleet Physics</a>
+        <a href="#kpt-dispatch" class="hover:text-ownlyPink transition-colors">KPT Engine</a>
+        <a href="#prds" class="hover:text-ownlyPink transition-colors">5 PRDs</a>
+        <a href="#telemetry" class="hover:text-ownlyPink transition-colors">Telemetry</a>
+      </nav>
+
+      <!-- External Documentation CTA -->
+      <div class="flex items-center space-x-3">
+        <a href="teardown.md" target="_blank" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-cardSubtle hover:bg-cardHover text-slateLight border border-borderDark transition-all">
+          <i data-lucide="file-text" class="w-3.5 h-3.5 text-rapidoYellow"></i>
+          <span>View Full MD Spec</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero & Executive Metrics Banner -->
+  <section class="relative pt-12 pb-16 overflow-hidden border-b border-borderDark">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-ownlyPink/15 via-canvas to-canvas -z-10"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Top Pill -->
+      <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cardSubtle border border-borderDark text-xs font-mono text-slateText mb-6">
+        <span class="w-2 h-2 rounded-full bg-ownlyPink animate-pulse"></span>
+        <span>EXECUTIVE BLUEPRINT • NRAI ALLIANCE (JULY 2026) • SERIES F FUNDED</span>
+      </div>
+
+      <!-- Headline -->
+      <div class="max-w-4xl">
+        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+          The Zero-Commission Food Delivery Disruption
+        </h1>
+        <p class="mt-4 text-base sm:text-lg text-slateText leading-relaxed">
+          How Rapido leverages a <span class="text-white font-semibold">$3.0B valuation</span>, a 
+          <span class="text-ownlyPink font-semibold">1,347% SaaS revenue surge</span>, dual-mode fleet physics, and the 
+          <span class="text-rapidoYellow font-semibold">500k+ restaurant NRAI alliance</span> to dismantle the Zomato and Swiggy duopoly 
+          and eliminate the ₹17.58 platform fee trap.
+        </p>
+      </div>
+
+      <!-- Executive Metrics Ticker -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-10">
+        <!-- Metric 1 -->
+        <div class="p-4 rounded-xl bg-card border border-borderDark hover:border-slate-700 transition-all">
+          <div class="flex items-center justify-between text-xs text-slateText">
+            <span>Post-Money Valuation</span>
+            <i data-lucide="trending-up" class="w-4 h-4 text-ownlyPink"></i>
+          </div>
+          <div class="text-2xl font-bold text-white mt-2">$3.0 Billion</div>
+          <div class="text-[11px] text-slateText mt-1">May 2026 ($240M Series F)</div>
+        </div>
+
+        <!-- Metric 2 -->
+        <div class="p-4 rounded-xl bg-card border border-borderDark hover:border-slate-700 transition-all">
+          <div class="flex items-center justify-between text-xs text-slateText">
+            <span>FY25 Revenue</span>
+            <i data-lucide="bar-chart-3" class="w-4 h-4 text-rapidoYellow"></i>
+          </div>
+          <div class="text-2xl font-bold text-white mt-2">₹934.2 Cr</div>
+          <div class="text-[11px] text-ownlyPink mt-1">+87.8% YoY Expansion</div>
+        </div>
+
+        <!-- Metric 3 -->
+        <div class="p-4 rounded-xl bg-card border border-borderDark hover:border-slate-700 transition-all">
+          <div class="flex items-center justify-between text-xs text-slateText">
+            <span>Driver SaaS Surge</span>
+            <i data-lucide="zap" class="w-4 h-4 text-ownlyPink"></i>
+          </div>
+          <div class="text-2xl font-bold text-ownlyPink mt-2">+1,347%</div>
+          <div class="text-[11px] text-slateText mt-1">₹275 Cr in FY25 vs ₹19 Cr</div>
+        </div>
+
+        <!-- Metric 4 -->
+        <div class="p-4 rounded-xl bg-card border border-borderDark hover:border-slate-700 transition-all">
+          <div class="flex items-center justify-between text-xs text-slateText">
+            <span>Duopoly Platform Fee</span>
+            <i data-lucide="alert-triangle" class="w-4 h-4 text-duopolyRed"></i>
+          </div>
+          <div class="text-2xl font-bold text-duopolyRed mt-2">₹17.58</div>
+          <div class="text-[11px] text-slateText mt-1">Swiggy/Zomato March 2026</div>
+        </div>
+
+        <!-- Metric 5 -->
+        <div class="p-4 rounded-xl bg-card border border-borderDark hover:border-slate-700 transition-all col-span-2 sm:col-span-1">
+          <div class="flex items-center justify-between text-xs text-slateText">
+            <span>NRAI Alliance</span>
+            <i data-lucide="handshake" class="w-4 h-4 text-rapidoYellow"></i>
+          </div>
+          <div class="text-2xl font-bold text-white mt-2">500,000+</div>
+          <div class="text-[11px] text-slateText mt-1">Restaurants at 0% Commission</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Main Content Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20">
+
+    <!-- REAL-WORLD SECTION 1: How Bangalore Adopted Us Milestone Banner -->
+    <section id="bangalore-milestones" class="space-y-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-borderDark pb-5 gap-4">
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="px-2.5 py-1 rounded bg-rapidoYellow/15 text-rapidoYellow text-xs font-mono font-bold border border-rapidoYellow/30">BANGALORE PILOT GROUND METRICS</span>
+            <span class="text-xs text-slateText uppercase tracking-wider font-mono">Real-World Scale</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mt-2">How Bangalore Adopted Us</h2>
+          <p class="text-slateText text-sm mt-1 max-w-2xl">
+            Namma Bengaluru's diners and restaurateurs have decisively rejected the duopoly fee tax. Verified operational scale achieved across Koramangala, Indiranagar, HSR, Whitefield, and Bellandur.
+          </p>
+        </div>
+        <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-card border border-borderDark text-xs font-mono text-slateText">
+          <span class="w-2 h-2 rounded-full bg-ownlyPink animate-ping"></span>
+          <span class="text-white font-semibold">LIVE HYPERLOCAL TRACTION</span>
+        </div>
+      </div>
+
+      <!-- 4 High-Impact Metric Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <!-- Metric 1: ₹34Cr+ Saved -->
+        <div class="p-6 rounded-2xl bg-card border border-borderDark hover:border-ownlyPink/40 transition-all relative overflow-hidden group">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-ownlyPink to-ownlyPinkDark"></div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-semibold uppercase tracking-wider text-slateText">Consumer Direct Savings</span>
+            <div class="w-10 h-10 rounded-xl bg-ownlyPink/10 text-ownlyPink flex items-center justify-center border border-ownlyPink/20 group-hover:scale-110 transition-transform">
+              <i data-lucide="piggy-bank" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div class="text-3xl sm:text-4xl font-extrabold text-white mt-4 font-mono tracking-tight flex items-baseline">
+            <span class="text-ownlyPink">₹</span><span>34Cr+</span>
+          </div>
+          <div class="text-sm font-semibold text-white mt-2">Saved on Platform, Packaging & Delivery Fees</div>
+          <p class="text-xs text-slateText mt-1 leading-relaxed">
+            Directly retained in Bengaluru diners' bank accounts vs. duopoly checkout surcharges.
+          </p>
+        </div>
+
+        <!-- Metric 2: 22K Restaurants -->
+        <div class="p-6 rounded-2xl bg-card border border-borderDark hover:border-rapidoYellow/40 transition-all relative overflow-hidden group">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-rapidoYellow to-rapidoYellowHover"></div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-semibold uppercase tracking-wider text-slateText">Merchant Ecosystem</span>
+            <div class="w-10 h-10 rounded-xl bg-rapidoYellow/10 text-rapidoYellow flex items-center justify-center border border-rapidoYellow/20 group-hover:scale-110 transition-transform">
+              <i data-lucide="store" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div class="text-3xl sm:text-4xl font-extrabold text-white mt-4 font-mono tracking-tight">
+            22,000+
+          </div>
+          <div class="text-sm font-semibold text-white mt-2">Restaurants Onboarded</div>
+          <p class="text-xs text-slateText mt-1 leading-relaxed">
+            From iconic heritage brands to cloud kitchens, operating at 100% dine-in price parity.
+          </p>
+        </div>
+
+        <!-- Metric 3: 42L+ Orders -->
+        <div class="p-6 rounded-2xl bg-card border border-borderDark hover:border-ownlyPink/40 transition-all relative overflow-hidden group">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-ownlyPink to-ownlyPinkDark"></div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-semibold uppercase tracking-wider text-slateText">Fleet Volume</span>
+            <div class="w-10 h-10 rounded-xl bg-ownlyPink/10 text-ownlyPink flex items-center justify-center border border-ownlyPink/20 group-hover:scale-110 transition-transform">
+              <i data-lucide="bike" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div class="text-3xl sm:text-4xl font-extrabold text-white mt-4 font-mono tracking-tight">
+            42 Lakh+
+          </div>
+          <div class="text-sm font-semibold text-white mt-2">Orders Delivered</div>
+          <p class="text-xs text-slateText mt-1 leading-relaxed">
+            Fulfilled by Rapido Captain dual-mode interleaved fleet with &lt;50s kitchen dwell.
+          </p>
+        </div>
+
+        <!-- Metric 4: 4.4 Star Rating -->
+        <div class="p-6 rounded-2xl bg-card border border-borderDark hover:border-rapidoYellow/40 transition-all relative overflow-hidden group">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-rapidoYellow to-rapidoYellowHover"></div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-semibold uppercase tracking-wider text-slateText">User Satisfaction</span>
+            <div class="w-10 h-10 rounded-xl bg-rapidoYellow/10 text-rapidoYellow flex items-center justify-center border border-rapidoYellow/20 group-hover:scale-110 transition-transform">
+              <i data-lucide="star" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div class="text-3xl sm:text-4xl font-extrabold text-white mt-4 font-mono tracking-tight flex items-baseline">
+            <span>4.4</span><span class="text-rapidoYellow text-2xl ml-1">★</span>
+          </div>
+          <div class="text-sm font-semibold text-white mt-2">Average Customer Rating</div>
+          <p class="text-xs text-slateText mt-1 leading-relaxed">
+            Across 380,000+ verified ratings praising honest bills and piping-hot deliveries.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- REAL-WORLD SECTION 2: The Ownly Promise 3-Pillar Section -->
+    <section id="ownly-promise" class="space-y-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-borderDark pb-5 gap-4">
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="px-2.5 py-1 rounded bg-ownlyPink/15 text-ownlyPink text-xs font-mono font-bold border border-ownlyPink/30">THE ZERO-GOUGE MANDATE</span>
+            <span class="text-xs text-slateText uppercase tracking-wider font-mono">Core Consumer Protections</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mt-2">The Ownly Promise</h2>
+          <p class="text-slateText text-sm mt-1 max-w-2xl">
+            Three structural, non-negotiable consumer guarantees protecting every single order. No hidden line items, no dark-pattern checkouts, no algorithmic price inflation.
+          </p>
+        </div>
+      </div>
+
+      <!-- 3 Hot-Pink Gradient Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Pillar 1: No Packaging Fees -->
+        <div class="relative rounded-3xl p-8 overflow-hidden shadow-2xl text-white transition-all hover:scale-[1.02] duration-300" style="background: linear-gradient(135deg, #FF1E6A 0%, #C7004C 100%);">
+          <div class="absolute -right-10 -bottom-10 w-44 h-44 rounded-full bg-white/10 blur-2xl pointer-events-none"></div>
+          
+          <div class="flex items-center justify-between mb-6">
+            <div class="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center relative shadow-inner">
+              <i data-lucide="package" class="w-8 h-8 text-white"></i>
+              <span class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <span class="w-12 h-1 bg-white rotate-45 rounded-full shadow-md"></span>
+              </span>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-mono font-bold tracking-wider uppercase border border-white/30 text-white">
+              PILLAR 01
+            </span>
+          </div>
+
+          <h3 class="text-2xl font-extrabold tracking-tight text-white mb-2">
+            No Packaging Fees
+          </h3>
+          <p class="text-white/90 text-sm leading-relaxed mb-6">
+            Enjoy your order at zero extra packaging charges on Ownly. We eliminate the arbitrary ₹25 to ₹50 "restaurant container surcharge" permanently.
+          </p>
+
+          <div class="pt-4 border-t border-white/20 flex items-center justify-between text-xs font-mono">
+            <span class="text-white/80">Duopoly Gouge:</span>
+            <span class="font-bold line-through text-white/70">₹25.00 – ₹50.00</span>
+          </div>
+          <div class="mt-1.5 flex items-center justify-between text-xs font-mono">
+            <span class="text-white font-bold">Ownly Price:</span>
+            <span class="font-extrabold text-rapidoYellow bg-black/30 px-2 py-0.5 rounded">₹0.00 FREE</span>
+          </div>
+        </div>
+
+        <!-- Pillar 2: No Platform Fees -->
+        <div class="relative rounded-3xl p-8 overflow-hidden shadow-2xl text-white transition-all hover:scale-[1.02] duration-300" style="background: linear-gradient(135deg, #FF1E6A 0%, #C7004C 100%);">
+          <div class="absolute -right-10 -bottom-10 w-44 h-44 rounded-full bg-white/10 blur-2xl pointer-events-none"></div>
+
+          <div class="flex items-center justify-between mb-6">
+            <div class="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center relative shadow-inner">
+              <i data-lucide="smartphone" class="w-8 h-8 text-white"></i>
+              <span class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <span class="w-12 h-1 bg-white rotate-45 rounded-full shadow-md"></span>
+              </span>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-mono font-bold tracking-wider uppercase border border-white/30 text-white">
+              PILLAR 02
+            </span>
+          </div>
+
+          <h3 class="text-2xl font-extrabold tracking-tight text-white mb-2">
+            No Platform Fees
+          </h3>
+          <p class="text-white/90 text-sm leading-relaxed mb-6">
+            Order on Ownly without a single rupee of platform charge. While Zomato & Swiggy locked in a predatory ₹17.58 fee per order, Ownly is permanently free.
+          </p>
+
+          <div class="pt-4 border-t border-white/20 flex items-center justify-between text-xs font-mono">
+            <span class="text-white/80">Duopoly Fee Parity:</span>
+            <span class="font-bold line-through text-white/70">₹17.58 / order</span>
+          </div>
+          <div class="mt-1.5 flex items-center justify-between text-xs font-mono">
+            <span class="text-white font-bold">Ownly Price:</span>
+            <span class="font-extrabold text-rapidoYellow bg-black/30 px-2 py-0.5 rounded">₹0.00 PERMANENT</span>
+          </div>
+        </div>
+
+        <!-- Pillar 3: No Surge Charges -->
+        <div class="relative rounded-3xl p-8 overflow-hidden shadow-2xl text-white transition-all hover:scale-[1.02] duration-300" style="background: linear-gradient(135deg, #FF1E6A 0%, #C7004C 100%);">
+          <div class="absolute -right-10 -bottom-10 w-44 h-44 rounded-full bg-white/10 blur-2xl pointer-events-none"></div>
+
+          <div class="flex items-center justify-between mb-6">
+            <div class="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center relative shadow-inner">
+              <i data-lucide="zap" class="w-8 h-8 text-white"></i>
+              <span class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <span class="w-12 h-1 bg-white rotate-45 rounded-full shadow-md"></span>
+              </span>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-mono font-bold tracking-wider uppercase border border-white/30 text-white">
+              PILLAR 03
+            </span>
+          </div>
+
+          <h3 class="text-2xl font-extrabold tracking-tight text-white mb-2">
+            No Surge Charges
+          </h3>
+          <p class="text-white/90 text-sm leading-relaxed mb-6">
+            Your price holds on Ownly when the kitchen is swamped or during peak monsoon rains. Dual-mode fleet capacity ensures steady supply without dynamic gouging.
+          </p>
+
+          <div class="pt-4 border-t border-white/20 flex items-center justify-between text-xs font-mono">
+            <span class="text-white/80">Duopoly Peak Surge:</span>
+            <span class="font-bold line-through text-white/70">+₹20.00 – ₹45.00</span>
+          </div>
+          <div class="mt-1.5 flex items-center justify-between text-xs font-mono">
+            <span class="text-white font-bold">Ownly Price:</span>
+            <span class="font-extrabold text-rapidoYellow bg-black/30 px-2 py-0.5 rounded">₹0.00 FIXED PRICE</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REAL-WORLD SECTION 3: Honest Prices, Now in Your City -->
+    <section id="dish-comparison" class="space-y-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-borderDark pb-5 gap-4">
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="px-2.5 py-1 rounded bg-rapidoYellow/15 text-rapidoYellow text-xs font-mono font-bold border border-rapidoYellow/30">REAL BANGALORE RESTAURANTS</span>
+            <span class="text-xs text-slateText uppercase tracking-wider font-mono">Live Price Audit</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mt-2">Honest Prices, Now in Your City</h2>
+          <p class="text-slateText text-sm mt-1 max-w-2xl">
+            Click to reveal the Ownly price across Bengaluru's top dining staples. Inspect how eliminating menu markups, platform fees, and packaging padding saves up to ₹130 on a single dish.
+          </p>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button onclick="toggleAllDishes()" id="btn-toggle-all-dishes" class="px-4 py-2 rounded-xl text-xs font-bold bg-cardSubtle hover:bg-cardHover text-white border border-borderDark flex items-center space-x-2 transition-all">
+            <i data-lucide="eye" class="w-4 h-4 text-ownlyPink"></i>
+            <span id="btn-toggle-all-text">Reveal All Ownly Prices</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Interactive 3-Dish Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Dish 1: Paradise Biryani -->
+        <div id="dish-card-1" class="dish-card rounded-2xl bg-card border border-borderDark hover:border-slate-700 transition-all overflow-hidden flex flex-col justify-between">
+          <div class="p-6 space-y-4">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-[10px] font-mono uppercase tracking-wider text-slateText bg-cardSubtle px-2 py-0.5 rounded border border-borderDark">Indiranagar / Koramangala</span>
+                <h3 class="text-lg font-bold text-white mt-1">Paradise Biryani</h3>
+                <div class="text-xs font-semibold text-ownlyPink mt-0.5">Special Royal Chicken Biryani</div>
+              </div>
+              <div class="p-2 rounded-xl bg-cardSubtle border border-borderDark text-right">
+                <div class="text-[10px] text-slateText">Other Apps</div>
+                <div class="text-base font-bold text-duopolyRed line-through font-mono">₹380</div>
+              </div>
+            </div>
+
+            <!-- Price Reveal Box -->
+            <div id="dish-box-1" class="p-4 rounded-xl bg-cardSubtle border border-borderDark transition-all relative">
+              <div id="dish-hidden-1" class="flex flex-col items-center justify-center py-6 space-y-3 cursor-pointer" onclick="toggleDish(1)">
+                <div class="w-12 h-12 rounded-full bg-ownlyPink/10 text-ownlyPink flex items-center justify-center border border-ownlyPink/30 animate-pulse">
+                  <i data-lucide="sparkles" class="w-6 h-6"></i>
+                </div>
+                <button class="px-4 py-1.5 rounded-lg text-xs font-bold bg-ownlyPink text-white shadow-lg shadow-pink-900/30 hover:bg-ownlyPinkHover transition-all">
+                  Click to Reveal Ownly Price
+                </button>
+                <div class="text-[11px] text-slateText">Tap to see real-world savings</div>
+              </div>
+
+              <!-- Revealed Content -->
+              <div id="dish-revealed-1" class="hidden space-y-3">
+                <div class="flex items-center justify-between pb-3 border-b border-borderDark">
+                  <div>
+                    <div class="text-[10px] font-mono text-slateText">OWNLY HONEST PRICE</div>
+                    <div class="text-3xl font-extrabold text-ownlyPink font-mono">₹275</div>
+                  </div>
+                  <div class="px-3 py-1 rounded-full bg-ownlyPink/20 border border-ownlyPink/40 text-ownlyPink text-xs font-bold font-mono animate-bounce">
+                    SAVED ₹105
+                  </div>
+                </div>
+
+                <!-- Breakdown -->
+                <div class="space-y-1.5 text-[11px] font-mono text-slateText pt-1">
+                  <div class="flex justify-between">
+                    <span>Menu Item (Parity):</span>
+                    <span class="text-white">₹250 (vs ₹300 duopoly)</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span>Packaging Charge:</span>
+                    <span class="text-ownlyPink font-bold">₹0 (vs ₹35 duopoly)</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span>Platform Fee:</span>
+                    <span class="text-ownlyPink font-bold">₹0 (vs ₹17.58 duopoly)</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span>Direct Delivery & GST:</span>
+                    <span class="text-white">₹25 (vs ₹45 duopoly)</span>
+                  </div>
+                </div>
+
+                <div class="pt-2 border-t border-borderDark flex justify-between items-center text-[10px] text-slate-400">
+                  <span>Dine-In Menu Parity Certified</span>
+                  <button onclick="toggleDish(1)" class="text-xs text-slate-500 hover:text-white underline">Hide</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 bg-cardSubtle border-t border-borderDark text-[11px] text-slateText flex items-center justify-between">
+            <span class="flex items-center"><i data-lucide="check" class="w-3.5 h-3.5 text-ownlyPink mr-1.5"></i>Zero Packaging & Platform Fee</span>
+            <span class="text-ownlyPink font-semibold">27.6% Cheaper</span>
+          </div>
+        </div>
+
+        <!-- Dish 2: Vivaha Bhojanambu -->
+        <div id="dish-card-2" class="dish-card rounded-2xl bg-card border border-borderDark hover:border-slate-700 transition-all overflow-hidden flex flex-col justify-between">
+          <div class="p-6 space-y-4">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-[10px] font-mono uppercase tracking-wider text-slateText bg-cardSubtle px-2 py-0.5 rounded border border-borderDark">Bel Road / HSR Layout</span>
+                <h3 class="text-lg font-bold text-white mt-1">Vivaha Bhojanambu</h3>
+                <div class="text-xs font-semibold text-ownlyPink mt-0.5">Kodi Vepudu Biryani</div>
+              </div>
+              <div class="p-2 rounded-xl bg-cardSubtle border border-borderDark text-right">
+                <div class="text-[10px] text-slateText">Other Apps</div>
+                <div class="text-base font-bold text-duopolyRed line-through font-mono">₹440</div>
+              </div>
+            </div>
+
+            <!-- Price Reveal Box -->
+            <div id="dish-box-2" class="p-4 rounded-xl bg-cardSubtle border border-borderDark transition-all relative">
+              <div id="dish-hidden-2" class="flex flex-col items-center justify-center py-6 space-y-3 cursor-pointer" onclick="toggleDish(2)">
+                <div class="w-12 h-12 rounded-full bg-ownlyPink/10 text-ownlyPink flex items-center justify-center border border-ownlyPink/30 animate-pulse">
+                  <i data-lucide="sparkles" class="w-6 h-6"></i>
+                </div>
+                <button class="px-4 py-1.5 rounded-lg text-xs font-bold bg-ownlyPink text-white shadow-lg shadow-pink-900/30 hover:bg-ownlyPinkHover transition-all">
+                  Click to Reveal Ownly Price
+                </button>
+                <div class="text-[11px] text-slateText">Tap to see real-world savings</div>
+              </div>
+
+              <!-- Revealed Content -->
+              <div id="dish-revealed-2" class="hidden space-y-3">
+                <div class="flex items-center justify-between pb-3 border-b border-borderDark">
+                  <div>
+                    <div class="text-[10px] font-mono text-slateText">OWNLY HONEST PRICE</div>
+                    <div class="text-3xl font-extrabold text-ownlyPink font-mono">₹310</div>
+                  </div>
+                  <div class="px-3 py-1 rounded-full bg-ownlyPink/20 border border-ownlyPink/40 text-ownlyPink text-xs font-bold font-mono animate-bounce">
+                    SAVED ₹130
+                  </div>
+                </div>
+
+                <!-- Breakdown -->
+                <div class="space-y-1.5 text-[11px] font-mono text-slateText pt-1">
+                  <div class="flex justify-between">
+                    <span>Menu Item (Parity):</span>
+                    <span class="text-white">₹285 (vs ₹350 duopoly)</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span>Packaging Charge:</span>
+                    <span class="text-ownlyPink font-bold">₹0 (vs ₹40 duopoly)</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span>Platform Fee:</span>
+                    <span class="text-ownlyPink font-bold">₹0 (vs ₹17.58 duopoly)</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span>Direct Delivery & GST:</span>
+                    <span class="text-white">₹25 (vs ₹50 duopoly)</span>
+                  </div>
+                </div>
+
+                <div class="pt-2 border-t border-borderDark flex justify-between items-center text-[10px] text-slate-400">
+                  <span>Dine-In Menu Parity Certified</span>
+                  <button onclick="toggleDish(2)" class="text-xs text-slate-500 hover:text-white underline">Hide</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 bg-cardSubtle border-t border-borderDark text-[11px] text-slateText flex items-center justify-between">
+            <span class="flex items-center"><i data-lucide="check" class="w-3.5 h-3.5 text-ownlyPink mr-1.5"></i>Zero Packaging & Platform Fee</span>
+            <span class="text-ownlyPink font-semibold">29.5% Cheaper</span>
+          </div>
+        </div>
+
+        <!-- Dish 3: Harley's Fine Baking -->
+        <div id="dish-card-3" class="dish-card rounded-2xl bg-card border border-borderDark hover:border-slate-700 transition-all overflow-hidden flex flex-col justify-between">
+          <div class="p-6 space-y-4">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-[10px] font-mono uppercase tracking-wider text-slateText bg-cardSubtle px-2 py-0.5 rounded border border-borderDark">Lavelle Road / Koramangala</span>
+                <h3 class="text-lg font-bold text-white mt-1">Harley's Fine Baking</h3>
+                <div class="text-xs font-semibold text-ownlyPink mt-0.5">Lotus Biscoff Slice</div>
+              </div>
+              <div class="p-2 rounded-xl bg-cardSubtle border border-borderDark text-right">
+                <div class="text-[10px] text-slateText">Other Apps</div>
+                <div class="text-base font-bold text-duopolyRed line-through font-mono">₹320</div>
+              </div>
+            </div>
+
+            <!-- Price Reveal Box -->
+            <div id="dish-box-3" class="p-4 rounded-xl bg-cardSubtle border border-borderDark transition-all relative">
+              <div id="dish-hidden-3" class="flex flex-col items-center justify-center py-6 space-y-3 cursor-pointer" onclick="toggleDish(3)">
+                <div class="w-12 h-12 rounded-full bg-ownlyPink/10 text-ownlyPink flex items-center justify-center border border-ownlyPink/30 animate-pulse">
+                  <i data-lucide="sparkles" class="w-6 h-6"></i>
+                </div>
+                <button class="px-4 py-1.5 rounded-lg text-xs font-bold bg-ownlyPink text-white shadow-lg shadow-pink-900/30 hover:bg-ownlyPinkHover transition-all">
+                  Click to Reveal Ownly Price
+                </button>
+                <div class="text-[11px] text-slateText">Tap to see real-world savings</div>
+              </div>
+
+              <!-- Revealed Content -->
+              <div id="dish-revealed-3" class="hidden space-y-3">
+                <div class="flex items-center justify-between pb-3 border-b border-borderDark">
+                  <div>
+                    <div class="text-[10px] font-mono text-slateText">OWNLY HONEST PRICE</div>
+                    <div class="text-3xl font-extrabold text-ownlyPink font-mono">₹220</div>
+                  </div>
+                  <div class="px-3 py-1 rounded-full bg-ownlyPink/20 border border-ownlyPink/40 text-ownlyPink text-xs font-bold font-mono animate-bounce">
+                    SAVED ₹100
+                  </div>
+                </div>
+
+                <!-- Breakdown -->
+                <div class="space-y-1.5 text-[11px] font-mono text-slateText pt-1">
+                  <div class="flex justify-between">
+                    <span>Menu Item (Parity):</span>
+                    <span class="text-white">₹200 (vs ₹250 duopoly)</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span>Packaging Charge:</span>
+                    <span class="text-ownlyPink font-bold">₹0 (vs ₹30 duopoly)</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span>Platform Fee:</span>
+                    <span class="text-ownlyPink font-bold">₹0 (vs ₹17.58 duopoly)</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span>Direct Delivery & GST:</span>
+                    <span class="text-white">₹20 (vs ₹40 duopoly)</span>
+                  </div>
+                </div>
+
+                <div class="pt-2 border-t border-borderDark flex justify-between items-center text-[10px] text-slate-400">
+                  <span>Dine-In Menu Parity Certified</span>
+                  <button onclick="toggleDish(3)" class="text-xs text-slate-500 hover:text-white underline">Hide</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 bg-cardSubtle border-t border-borderDark text-[11px] text-slateText flex items-center justify-between">
+            <span class="flex items-center"><i data-lucide="check" class="w-3.5 h-3.5 text-ownlyPink mr-1.5"></i>Zero Packaging & Platform Fee</span>
+            <span class="text-ownlyPink font-semibold">31.2% Cheaper</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODULE 1: Live Interactive Cart Shock & Landed Cost Simulator -->
+    <section id="economics" class="space-y-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-borderDark pb-5 gap-4">
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="px-2.5 py-1 rounded bg-ownlyPink/10 text-ownlyPink text-xs font-mono font-semibold">MODULE 01</span>
+            <span class="text-xs text-slateText uppercase tracking-wider font-mono">Consumer Psychology & Economics</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mt-2">The "Cart Shock" Decomposition & Landed Cost Engine</h2>
+          <p class="text-slateText text-sm mt-1 max-w-2xl">
+            Simulate the true checkout inflation experienced by consumers. Toggle the anchors or slide the dine-in order value to watch platform fees, markups, and taxes compound in real time.
+          </p>
+        </div>
+
+        <!-- Preset Toggle Pills -->
+        <div class="flex items-center space-x-2 bg-card p-1 rounded-xl border border-borderDark self-start md:self-auto">
+          <button id="preset-200" onclick="applyPreset(200)" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-ownlyPink text-white transition-all shadow-md shadow-pink-900/30">
+            Anchor A: ₹200 Single-Diner
+          </button>
+          <button id="preset-500" onclick="applyPreset(500)" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slateText hover:text-white transition-all">
+            Anchor B: ₹500 Family Basket
+          </button>
+        </div>
+      </div>
+
+      <!-- Simulator Interactive Controls & Cards -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Controls & Sliders (4 Cols) -->
+        <div class="lg:col-span-4 space-y-6 p-6 rounded-2xl bg-card border border-borderDark">
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <label for="order-slider" class="text-xs font-semibold uppercase tracking-wider text-slateText">
+                Dine-In Menu Value
+              </label>
+              <span id="slider-val-display" class="text-xl font-bold font-mono text-white">₹200</span>
+            </div>
+            <input 
+              type="range" 
+              id="order-slider" 
+              min="100" 
+              max="2000" 
+              step="10" 
+              value="200" 
+              class="w-full custom-slider"
+              oninput="updateCalculator(this.value)"
+            >
+            <div class="flex justify-between text-[10px] text-slate-500 font-mono mt-1">
+              <span>₹100 (Snack)</span>
+              <span>₹1,000</span>
+              <span>₹2,000 (Party)</span>
+            </div>
+          </div>
+
+          <!-- Dynamic Output Metrics -->
+          <div class="space-y-4 pt-4 border-t border-borderDark">
+            
+            <!-- Real-Time Customer Savings -->
+            <div class="p-4 rounded-xl bg-ownlyPink/10 border border-ownlyPink/30">
+              <div class="flex items-center justify-between text-xs font-semibold text-ownlyPink">
+                <span>Net Consumer Savings</span>
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+              </div>
+              <div id="savings-display" class="text-3xl font-extrabold text-ownlyPink mt-2 font-mono">
+                ₹100.88
+              </div>
+              <p class="text-xs text-slateText mt-1">
+                Amount kept in user's bank account on OWNLY vs Duopoly checkout.
+              </p>
+            </div>
+
+            <!-- Cart Shock Inflation Metric -->
+            <div class="p-4 rounded-xl bg-duopolyRed/10 border border-duopolyRed/30">
+              <div class="flex items-center justify-between text-xs font-semibold text-duopolyRed">
+                <span>Duopoly Cart Shock Inflation</span>
+                <i data-lucide="trending-up" class="w-4 h-4"></i>
+              </div>
+              <div id="shock-display" class="text-2xl font-bold text-white mt-2 font-mono">
+                +67.7%
+              </div>
+              <p class="text-xs text-slateText mt-1">
+                Landed price surge above offline dine-in baseline causing 42.8% checkout bounce.
+              </p>
+            </div>
+
+            <!-- Restaurant Net Margin Gain -->
+            <div class="p-4 rounded-xl bg-cardSubtle border border-borderDark">
+              <div class="flex items-center justify-between text-xs font-semibold text-rapidoYellow">
+                <span>Restaurant Retained Cash</span>
+                <i data-lucide="store" class="w-4 h-4"></i>
+              </div>
+              <div id="restaurant-gain-display" class="text-xl font-bold text-white mt-2 font-mono">
+                +₹20.32 (+10.2%)
+              </div>
+              <p class="text-xs text-slateText mt-1">
+                Zero commission allows restaurants to retain more net cash despite lower customer prices.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Real-Time Comparison Bill Table (8 Cols) -->
+        <div class="lg:col-span-8 rounded-2xl bg-card border border-borderDark overflow-hidden">
+          <div class="p-5 border-b border-borderDark flex justify-between items-center bg-cardSubtle">
+            <span class="text-xs font-mono uppercase tracking-wider text-slateText font-semibold">
+              Live Forensic Bill Comparison
+            </span>
+            <span class="text-xs text-slate-500">Distance: 3.2 km | Koramangala Cluster</span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead>
+                <tr class="border-b border-borderDark text-slateText bg-card/60">
+                  <th class="py-3 px-4 font-semibold">Cost Component</th>
+                  <th class="py-3 px-4 font-semibold text-right">Offline Dine-In</th>
+                  <th class="py-3 px-4 font-semibold text-right text-duopolyRed">Zomato / Swiggy</th>
+                  <th class="py-3 px-4 font-semibold text-right text-ownlyPink bg-ownlyPink/5">OWNLY Honest Bill</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-borderDark/60 font-mono text-slate-300">
+                <tr>
+                  <td class="py-3 px-4 font-sans font-medium text-white flex items-center">
+                    <span>Menu Item Price</span>
+                    <span id="markup-tag" class="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-duopolyRed/20 text-duopolyRed font-mono">+20% Mkup</span>
+                  </td>
+                  <td id="row-dinein-menu" class="py-3 px-4 text-right">₹200.00</td>
+                  <td id="row-duopoly-menu" class="py-3 px-4 text-right text-white font-semibold">₹240.00</td>
+                  <td id="row-ownly-menu" class="py-3 px-4 text-right text-ownlyPink font-semibold bg-ownlyPink/5">₹200.00</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-sans text-slateText">Packaging Charge</td>
+                  <td class="py-2.5 px-4 text-right text-slate-500">₹0.00</td>
+                  <td id="row-duopoly-pack" class="py-2.5 px-4 text-right">₹25.00</td>
+                  <td id="row-ownly-pack" class="py-2.5 px-4 text-right bg-ownlyPink/5">₹15.00</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-sans text-slateText">Delivery Logistics Fee</td>
+                  <td class="py-2.5 px-4 text-right text-slate-500">₹0.00</td>
+                  <td id="row-duopoly-deliv" class="py-2.5 px-4 text-right">₹35.00</td>
+                  <td id="row-ownly-deliv" class="py-2.5 px-4 text-right bg-ownlyPink/5">₹20.00</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-sans text-slateText">Surge / Weather Demand</td>
+                  <td class="py-2.5 px-4 text-right text-slate-500">₹0.00</td>
+                  <td id="row-duopoly-surge" class="py-2.5 px-4 text-right">₹10.00</td>
+                  <td id="row-ownly-surge" class="py-2.5 px-4 text-right text-slate-500 bg-ownlyPink/5">₹0.00</td>
+                </tr>
+                <tr class="bg-duopolyRed/5">
+                  <td class="py-3 px-4 font-sans font-semibold text-duopolyRed flex items-center">
+                    <span>Platform Access Fee</span>
+                    <span class="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-duopolyRed/20 text-duopolyRed font-mono">March 2026 Parity</span>
+                  </td>
+                  <td class="py-3 px-4 text-right text-slate-500">₹0.00</td>
+                  <td class="py-3 px-4 text-right">
+                    <div class="font-bold text-duopolyRed">₹14.90</div>
+                    <div class="text-[10px] text-slate-400 font-mono">₹17.58 incl. 18% GST</div>
+                  </td>
+                  <td class="py-3 px-4 text-right bg-ownlyPink/10">
+                    <div class="font-bold text-ownlyPink">₹0.00</div>
+                    <div class="text-[10px] text-ownlyPink font-mono font-bold">Permanent FREE</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-sans text-slateText">Food GST (5%)</td>
+                  <td id="row-dinein-gst-food" class="py-2.5 px-4 text-right">₹10.00</td>
+                  <td id="row-duopoly-gst-food" class="py-2.5 px-4 text-right">₹12.00</td>
+                  <td id="row-ownly-gst-food" class="py-2.5 px-4 text-right bg-ownlyPink/5">₹10.00</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-sans text-slateText">Services GST (18%)</td>
+                  <td class="py-2.5 px-4 text-right text-slate-500">₹0.00</td>
+                  <td id="row-duopoly-gst-serv" class="py-2.5 px-4 text-right">₹15.28</td>
+                  <td id="row-ownly-gst-serv" class="py-2.5 px-4 text-right bg-ownlyPink/5">₹6.30</td>
+                </tr>
+                <tr class="border-t-2 border-borderDark bg-cardSubtle text-sm sm:text-base font-bold">
+                  <td class="py-4 px-4 font-sans text-white">FINAL LANDED TOTAL</td>
+                  <td id="row-dinein-total" class="py-4 px-4 text-right text-slate-300">₹210.00</td>
+                  <td id="row-duopoly-total" class="py-4 px-4 text-right text-duopolyRed">₹352.18</td>
+                  <td id="row-ownly-total" class="py-4 px-4 text-right text-ownlyPink bg-ownlyPink/10">₹251.30</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Bottom Visual Bar Comparison -->
+          <div class="p-5 border-t border-borderDark bg-card space-y-3">
+            <div class="text-xs font-semibold text-slateText uppercase tracking-wider">
+              Landed Cost Stack Visualization
+            </div>
+            <div class="space-y-2">
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-slate-400">Zomato / Swiggy Total: <strong id="bar-duopoly-text" class="text-duopolyRed">₹352.18</strong></span>
+                  <span id="bar-duopoly-pct" class="text-duopolyRed font-mono">+67.7% vs Dine-in</span>
+                </div>
+                <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden flex">
+                  <div id="bar-duopoly-food" class="bg-slate-500 h-full" style="width: 68%;"></div>
+                  <div id="bar-duopoly-fees" class="bg-duopolyRed h-full" style="width: 32%;"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-slate-400">OWNLY Landed Total: <strong id="bar-ownly-text" class="text-ownlyPink">₹251.30</strong></span>
+                  <span id="bar-ownly-pct" class="text-ownlyPink font-mono">+19.6% vs Dine-in</span>
+                </div>
+                <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden flex">
+                  <div id="bar-ownly-food" class="bg-slate-500 h-full" style="width: 80%;"></div>
+                  <div id="bar-ownly-fees" class="bg-ownlyPink h-full" style="width: 20%;"></div>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center space-x-4 text-[10px] text-slate-500 pt-1">
+              <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-slate-500 mr-1.5"></span> Base Food + Food GST</span>
+              <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-duopolyRed mr-1.5"></span> Duopoly Extra Surcharges & Platform Fee</span>
+              <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-ownlyPink mr-1.5"></span> OWNLY Pass-Through Logistics Only</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- MODULE 2: Fleet Utilization & 24-Hour Demand Curves -->
+    <section id="demand-fleet" class="space-y-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-borderDark pb-5 gap-4">
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="px-2.5 py-1 rounded bg-rapidoYellow/15 text-rapidoYellow text-xs font-mono font-bold border border-rapidoYellow/30">MODULE 02</span>
+            <span class="text-xs text-slateText uppercase tracking-wider font-mono">Fleet Physics & Systems Modeling</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mt-2">24-Hour Mobility vs. Food Demand Synchronization</h2>
+          <p class="text-slateText text-sm mt-1 max-w-2xl">
+            Why dedicated food fleets suffer 42% midday deadhead idling. Rapido’s dual-mode interleaved fleet captures commute peaks and dining peaks with 95%+ sustained utilization.
+          </p>
+        </div>
+
+        <!-- Chart Toggle Controls -->
+        <div class="flex flex-wrap items-center gap-2 bg-card p-1.5 rounded-xl border border-borderDark">
+          <button id="btn-chart-all" onclick="setChartDataset('all')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-700 text-white transition-all">
+            All Streams
+          </button>
+          <button id="btn-chart-bike" onclick="setChartDataset('bike')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slateText hover:text-white transition-all">
+            Mobility Only
+          </button>
+          <button id="btn-chart-food" onclick="setChartDataset('food')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slateText hover:text-white transition-all">
+            Food Only
+          </button>
+          <button id="btn-chart-combined" onclick="setChartDataset('combined')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-ownlyPink hover:text-white transition-all">
+            Combined Fleet Yield
+          </button>
+        </div>
+      </div>
+
+      <!-- Chart & Operational Insights Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        
+        <!-- Interactive Chart Canvas (8 Cols) -->
+        <div class="lg:col-span-8 p-6 rounded-2xl bg-card border border-borderDark flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-mono text-slateText uppercase tracking-wider font-semibold">
+                Fleet Demand Curves (00:00 - 23:00 IST)
+              </span>
+              <span class="text-xs font-mono text-ownlyPink flex items-center">
+                <span class="w-2 h-2 rounded-full bg-ownlyPink mr-1.5 animate-ping"></span>
+                Peak Inversion Efficiency: 94.2%
+              </span>
+            </div>
+            <div class="relative h-[340px] w-full">
+              <canvas id="demandChart"></canvas>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-4 border-t border-borderDark grid grid-cols-3 gap-4 text-center">
+            <div>
+              <div class="text-[11px] text-slateText font-medium">Morning Commute Peak</div>
+              <div class="text-sm font-bold text-rapidoYellow mt-0.5">08:30 - 10:30 IST</div>
+              <div class="text-[10px] text-slate-500">Bike Taxi: 92% Util</div>
+            </div>
+            <div>
+              <div class="text-[11px] text-slateText font-medium">Lunch Food Surge</div>
+              <div class="text-sm font-bold text-ownlyPink mt-0.5">12:30 - 14:30 IST</div>
+              <div class="text-[10px] text-slate-500">Food Orders: 94% Util</div>
+            </div>
+            <div>
+              <div class="text-[11px] text-slateText font-medium">Dinner Peak</div>
+              <div class="text-sm font-bold text-white mt-0.5">20:00 - 22:30 IST</div>
+              <div class="text-[10px] text-slate-500">Food Orders: 98% Util</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- The Pillion Seat Conflict Deep-Dive (4 Cols) -->
+        <div class="lg:col-span-4 p-6 rounded-2xl bg-card border border-borderDark flex flex-col justify-between space-y-6">
+          <div>
+            <div class="flex items-center space-x-2 text-rapidoYellow mb-3">
+              <i data-lucide="wrench" class="w-4 h-4"></i>
+              <span class="text-xs font-bold uppercase tracking-wider font-mono">Ground Physical Reality</span>
+            </div>
+            <h3 class="text-lg font-bold text-white leading-snug">
+              The Pillion Seat Conflict & Modular QLP Hardware
+            </h3>
+            <p class="text-xs text-slateText mt-2 leading-relaxed">
+              Carrying a commuter passenger requires a completely clear, clean pillion seat with footrests accessible. 
+              Carrying food requires a 50L rigid thermal box. If a captain permanently mounts a thermal box, they forfeit 
+              <strong>₹600+/day in peak commuter fares</strong>.
+            </p>
+
+            <div class="mt-4 space-y-3">
+              <div class="p-3 rounded-xl bg-cardSubtle border border-borderDark">
+                <div class="text-xs font-semibold text-white flex items-center">
+                  <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-ownlyPink mr-2"></i>
+                  The Quick-Latch Pannier (QLP)
+                </div>
+                <p class="text-[11px] text-slateText mt-1">
+                  Accordion-style aluminum subframe folds flat to &lt;8.5cm thickness for passenger rides. Expands to 52L in 4.5 seconds.
+                </p>
+              </div>
+
+              <div class="p-3 rounded-xl bg-cardSubtle border border-borderDark">
+                <div class="text-xs font-semibold text-white flex items-center">
+                  <i data-lucide="bluetooth" class="w-3.5 h-3.5 text-rapidoYellow mr-2"></i>
+                  BLE Latch Telemetry Handshake
+                </div>
+                <p class="text-[11px] text-slateText mt-1">
+                  Magnetic reed sensor communicates hardware mode to dispatch server. Zero food tasks dispatched in Commute Mode.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-ownlyPink/10 border border-ownlyPink/30">
+            <div class="text-[11px] font-semibold text-ownlyPink uppercase font-mono">Captain Economic Impact</div>
+            <div class="text-xl font-bold text-white mt-1">₹980 vs. ₹720</div>
+            <div class="text-[11px] text-slate-400 mt-0.5">+36.1% Daily Take-Home via Dual-Mode Interleaving</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- MODULE 3: Two-Phase KPT Dispatch Visualizer & Timeline -->
+    <section id="kpt-dispatch" class="space-y-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-borderDark pb-5 gap-4">
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="px-2.5 py-1 rounded bg-rapidoYellow/15 text-rapidoYellow text-xs font-mono font-bold border border-rapidoYellow/30">MODULE 03</span>
+            <span class="text-xs text-slateText uppercase tracking-wider font-mono">Operational Dispatch Algorithms</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mt-2">Two-Phase Just-in-Time KPT Dispatch Engine</h2>
+          <p class="text-slateText text-sm mt-1 max-w-2xl">
+            Curbing the "Phantom Wait". How postponing rider broadcast until kitchen packing minimizes uncompensated driver wait times from 13.5 minutes to under 50 seconds.
+          </p>
+        </div>
+
+        <!-- Strategy Toggle Buttons -->
+        <div class="flex items-center space-x-2 bg-card p-1 rounded-xl border border-borderDark">
+          <button id="btn-dispatch-ownly" onclick="setDispatchMode('ownly')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-ownlyPink text-white transition-all shadow-md shadow-pink-900/30">
+            OWNLY Two-Phase JIT
+          </button>
+          <button id="btn-dispatch-duopoly" onclick="setDispatchMode('duopoly')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slateText hover:text-white transition-all">
+            Duopoly Brute-Force
+          </button>
+        </div>
+      </div>
+
+      <!-- Scrubber Timeline & Simulation Card -->
+      <div class="p-8 rounded-2xl bg-card border border-borderDark space-y-8">
+        
+        <!-- Dynamic Header Banner for Mode -->
+        <div id="dispatch-banner" class="p-4 rounded-xl bg-ownlyPink/10 border border-ownlyPink/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-center space-x-3">
+            <div id="dispatch-icon" class="p-2 rounded-lg bg-ownlyPink/20 text-ownlyPink">
+              <i data-lucide="shield-check" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h4 id="dispatch-title" class="text-sm font-bold text-white">
+                OWNLY Active: Two-Phase Predictive JIT Dispatch Protocol
+              </h4>
+              <p id="dispatch-desc" class="text-xs text-slateText">
+                Order held in silent ML queue. Rider broadcast triggered at (Predicted KPT - Transit ETA - 60s).
+              </p>
+            </div>
+          </div>
+          <div class="text-right sm:text-left font-mono">
+            <div class="text-[10px] uppercase text-slateText">Driver Dwell at Kitchen</div>
+            <div id="dispatch-dwell" class="text-xl font-bold text-ownlyPink">48 Seconds</div>
+          </div>
+        </div>
+
+        <!-- Interactive Timeline Steps -->
+        <div class="relative">
+          <!-- Timeline bar line -->
+          <div class="absolute top-1/2 left-0 right-0 h-1 bg-borderDark -translate-y-1/2 hidden md:block"></div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-4 relative z-10">
+            
+            <!-- Step 1 -->
+            <div class="p-4 rounded-xl bg-cardSubtle border border-borderDark flex flex-col justify-between space-y-3 hover:border-slate-600 transition-all">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-mono font-bold text-slate-400">T = 00:00</span>
+                <span class="w-2.5 h-2.5 rounded-full bg-rapidoYellow"></span>
+              </div>
+              <div>
+                <div class="text-xs font-semibold text-white">Order Confirmed</div>
+                <p class="text-[11px] text-slateText mt-1">Diner pays on app; kitchen POS accepts ticket.</p>
+              </div>
+              <div class="text-[10px] font-mono text-slate-500">POS Ingestion OK</div>
+            </div>
+
+            <!-- Step 2 -->
+            <div id="timeline-step2" class="p-4 rounded-xl bg-cardSubtle border border-borderDark flex flex-col justify-between space-y-3 hover:border-slate-600 transition-all">
+              <div class="flex items-center justify-between">
+                <span id="step2-time" class="text-xs font-mono font-bold text-slate-400">T + 01:00</span>
+                <span id="step2-dot" class="w-2.5 h-2.5 rounded-full bg-rapidoYellow"></span>
+              </div>
+              <div>
+                <div id="step2-title" class="text-xs font-semibold text-white">ML KPT Inference</div>
+                <p id="step2-desc" class="text-[11px] text-slateText mt-1">XGBoost estimates prep duration: 17 mins.</p>
+              </div>
+              <div id="step2-tag" class="text-[10px] font-mono text-rapidoYellow">Queue Depth: 4 Orders</div>
+            </div>
+
+            <!-- Step 3 -->
+            <div id="timeline-step3" class="p-4 rounded-xl bg-ownlyPink/10 border border-ownlyPink/40 flex flex-col justify-between space-y-3 transition-all">
+              <div class="flex items-center justify-between">
+                <span id="step3-time" class="text-xs font-mono font-bold text-slate-400">T + 07:00</span>
+                <span id="step3-dot" class="w-2.5 h-2.5 rounded-full bg-ownlyPink"></span>
+              </div>
+              <div>
+                <div id="step3-title" class="text-xs font-semibold text-white">Phase 1: Silent Prep</div>
+                <p id="step3-desc" class="text-[11px] text-slateText mt-1">NO rider assigned. Captain finishes passenger trip nearby.</p>
+              </div>
+              <div id="step3-tag" class="text-[10px] font-mono text-ownlyPink">Zero Driver Dwell</div>
+            </div>
+
+            <!-- Step 4 -->
+            <div id="timeline-step4" class="p-4 rounded-xl bg-cardSubtle border border-borderDark flex flex-col justify-between space-y-3 hover:border-slate-600 transition-all">
+              <div class="flex items-center justify-between">
+                <span id="step4-time" class="text-xs font-mono font-bold text-slate-400">T + 12:30</span>
+                <span id="step4-dot" class="w-2.5 h-2.5 rounded-full bg-ownlyPink animate-pulse"></span>
+              </div>
+              <div>
+                <div id="step4-title" class="text-xs font-semibold text-white">Phase 2: JIT Trigger</div>
+                <p id="step4-desc" class="text-[11px] text-slateText mt-1">Order broadcast to Captain 4 mins away. Transit matches finish.</p>
+              </div>
+              <div id="step4-tag" class="text-[10px] font-mono text-slate-400">Target ETA: 16:30</div>
+            </div>
+
+            <!-- Step 5 -->
+            <div id="timeline-step5" class="p-4 rounded-xl bg-cardSubtle border border-borderDark flex flex-col justify-between space-y-3 hover:border-slate-600 transition-all">
+              <div class="flex items-center justify-between">
+                <span id="step5-time" class="text-xs font-mono font-bold text-slate-400">T + 17:00</span>
+                <span id="step5-dot" class="w-2.5 h-2.5 rounded-full bg-ownlyPink"></span>
+              </div>
+              <div>
+                <div id="step5-title" class="text-xs font-semibold text-white">Zero-Wait Handshake</div>
+                <p id="step5-desc" class="text-[11px] text-slateText mt-1">Captain grabs packed food from counter. Departs in &lt;50s.</p>
+              </div>
+              <div id="step5-tag" class="text-[10px] font-mono text-ownlyPink">Thermal State: 68°C</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Operational Metrics Comparison Row -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 border-t border-borderDark">
+          <div class="p-4 rounded-xl bg-cardSubtle">
+            <div class="text-xs text-slateText">Driver Waiting Time at Restaurant</div>
+            <div id="stat-dwell-time" class="text-2xl font-bold text-ownlyPink mt-1 font-mono">0.8 mins (48s)</div>
+            <div id="stat-dwell-sub" class="text-[11px] text-slate-500 mt-0.5">vs. 13.5 mins on Zomato/Swiggy</div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-cardSubtle">
+            <div class="text-xs text-slateText">Captain Effective Hourly Pay</div>
+            <div id="stat-eph" class="text-2xl font-bold text-white mt-1 font-mono">₹142.50 / hr</div>
+            <div id="stat-eph-sub" class="text-[11px] text-ownlyPink mt-0.5">+28.4% capacity expansion</div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-cardSubtle">
+            <div class="text-xs text-slateText">Food Temperature at Doorstep</div>
+            <div id="stat-temp" class="text-2xl font-bold text-white mt-1 font-mono">65.4° C</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">Zero cooling delay on kitchen counter</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- MODULE 4: Five Full-Scale PRD Explorer & Interactive UI Mockups -->
+    <section id="prds" class="space-y-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-borderDark pb-5 gap-4">
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="px-2.5 py-1 rounded bg-purple-500/10 text-purple-400 text-xs font-mono font-semibold">MODULE 04</span>
+            <span class="text-xs text-slateText uppercase tracking-wider font-mono">Engineering Specifications</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mt-2">Five Production Product Requirement Documents (PRDs)</h2>
+          <p class="text-slateText text-sm mt-1 max-w-2xl">
+            Explore the unabridged technical specifications governing the dispatch engine, fleet hardware, honest checkout funnel, SLA recovery, and NRAI merchant portal.
+          </p>
+        </div>
+      </div>
+
+      <!-- PRD Tabs Navigation -->
+      <div class="flex flex-wrap gap-2 border-b border-borderDark pb-2">
+        <button onclick="showPrd('prd1')" id="tab-prd1" class="prd-tab-btn px-4 py-2 rounded-lg text-xs font-bold bg-ownlyPink text-white transition-all shadow-md shadow-pink-900/30">
+          PRD 1: Two-Phase KPT Dispatch
+        </button>
+        <button onclick="showPrd('prd2')" id="tab-prd2" class="prd-tab-btn px-4 py-2 rounded-lg text-xs font-semibold text-slateText hover:text-white transition-all">
+          PRD 2: Modular QLP Hardware
+        </button>
+        <button onclick="showPrd('prd3')" id="tab-prd3" class="prd-tab-btn px-4 py-2 rounded-lg text-xs font-semibold text-slateText hover:text-white transition-all">
+          PRD 3: Upfront Landed Price Funnel
+        </button>
+        <button onclick="showPrd('prd4')" id="tab-prd4" class="prd-tab-btn px-4 py-2 rounded-lg text-xs font-semibold text-slateText hover:text-white transition-all">
+          PRD 4: 60-Sec SLA Recovery
+        </button>
+        <button onclick="showPrd('prd5')" id="tab-prd5" class="prd-tab-btn px-4 py-2 rounded-lg text-xs font-semibold text-slateText hover:text-white transition-all">
+          PRD 5: NRAI Merchant Portal
+        </button>
+      </div>
+
+      <!-- PRD Content Container -->
+      <div class="rounded-2xl bg-card border border-borderDark p-6 sm:p-8">
+        
+        <!-- PRD 1 Content -->
+        <div id="content-prd1" class="prd-pane space-y-6">
+          <div class="flex items-center justify-between border-b border-borderDark pb-4">
+            <div>
+              <span class="text-xs font-mono text-ownlyPink font-semibold">FEATURE ID: PRD-OWNLY-OPS-001</span>
+              <h3 class="text-xl font-bold text-white mt-1">Two-Phase Machine Learning Predictive KPT Dispatch Engine</h3>
+            </div>
+            <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 text-xs font-mono">Status: Ready for Build</span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 text-xs sm:text-sm">
+            <div class="lg:col-span-2 space-y-4 text-slateText leading-relaxed">
+              <h4 class="text-white font-semibold text-sm">1. Problem Statement</h4>
+              <p>
+                Immediate dispatch of delivery captains upon order confirmation results in an average driver idle waiting time of 
+                <strong>13.4 minutes</strong> outside busy restaurant kitchens. This costs captains ~28% in uncompensated time, increases 
+                daily cancellations by 14.2%, and creates crowd hazards at cloud kitchen entrances.
+              </p>
+
+              <h4 class="text-white font-semibold text-sm">2. Algorithmic Architecture</h4>
+              <p>
+                The engine evaluates orders in two distinct lifecycle phases. In Phase 1, the order is ingested and passed through an XGBoost regressor 
+                evaluating active kitchen load, dish preparation complexity, and historical cook times. Dispatch broadcast is held back in a Kafka delay queue. 
+                In Phase 2, the dispatch trigger fires at <code class="text-ownlyPink font-mono bg-canvas px-1.5 py-0.5 rounded">T = KPT - Transit_ETA - 60s</code>, 
+                matching a captain who arrives exactly as food packaging finishes.
+              </p>
+
+              <h4 class="text-white font-semibold text-sm">3. Edge Case Mitigation</h4>
+              <ul class="list-disc pl-5 space-y-1">
+                <li><strong>Kitchen Accelerates:</strong> If kitchen hits "Food Ready" early, system fires instant high-priority broadcast with ₹15 pickup bonus.</li>
+                <li><strong>Captain Rejection:</strong> Cascades instantly to secondary matched captain within 800m with zero cooldown delay.</li>
+                <li><strong>Monsoon Traffic Spike:</strong> Transit model recalculates dynamically; fires Phase 2 early if street speeds drop.</li>
+              </ul>
+            </div>
+
+            <div class="p-5 rounded-xl bg-cardSubtle border border-borderDark space-y-4">
+              <div class="text-xs font-mono font-semibold uppercase text-slate-400">Target Key Results (OKRs)</div>
+              <div class="space-y-3">
+                <div class="border-l-2 border-ownlyPink pl-3">
+                  <div class="text-white font-bold text-base">&lt;90 Seconds</div>
+                  <div class="text-xs text-slateText">Average captain pickup dwell time (vs 13.4 mins)</div>
+                </div>
+                <div class="border-l-2 border-rapidoYellow pl-3">
+                  <div class="text-white font-bold text-base">+22% Yield</div>
+                  <div class="text-xs text-slateText">Increase in captain daily completed trips</div>
+                </div>
+                <div class="border-l-2 border-ownlyPink pl-3">
+                  <div class="text-white font-bold text-base">&lt;110 Seconds</div>
+                  <div class="text-xs text-slateText">Mean Absolute Error (MAE) of KPT predictions</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRD 2 Content & Interactive Hardware Mockup -->
+        <div id="content-prd2" class="prd-pane hidden space-y-6">
+          <div class="flex items-center justify-between border-b border-borderDark pb-4">
+            <div>
+              <span class="text-xs font-mono text-rapidoYellow font-semibold">FEATURE ID: PRD-OWNLY-FLT-002</span>
+              <h3 class="text-xl font-bold text-white mt-1">Modular Quick-Latch Pannier (QLP) Hardware & Mode-Switching OS</h3>
+            </div>
+            <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 text-xs font-mono">Status: Hardware Pilot</span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div class="lg:col-span-7 space-y-4 text-xs sm:text-sm text-slateText leading-relaxed">
+              <h4 class="text-white font-semibold text-sm">1. Physical Chassis Engineering</h4>
+              <p>
+                The Quick-Latch Pannier (QLP) solves the pillion seat conflict by utilizing an accordion-folding subframe mounted to the rear 
+                chassis behind the pillion grab rail. In Passenger Commute Mode, the side pods collapse to less than 8.5 cm, providing 100% foot-peg clearance 
+                for paying bike-taxi commuters. In Food Mode, a gas-strut quick release expands a 52-liter insulated cargo cell in 4.5 seconds.
+              </p>
+
+              <h4 class="text-white font-semibold text-sm">2. Sensor & BLE Handshake</h4>
+              <p>
+                A high-durability magnetic reed switch embedded in the lock latch verifies mechanical deployment. The latch transmits an encrypted 
+                BLE ping to the Captain Android App. The server refuses food dispatch assignments unless the latch confirms <code class="text-ownlyPink font-mono">HARDWARE_STATE: FOOD_CARGO</code>.
+              </p>
+
+              <div class="p-4 rounded-xl bg-cardSubtle border border-borderDark">
+                <div class="text-xs font-bold text-white mb-2">Hardware Performance Specs</div>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                  <div>• Cycle Rating: 10,000 expansions</div>
+                  <div>• Ingress Rating: IP67 Waterproof</div>
+                  <div>• Max Payload: 25 kg dynamic load</div>
+                  <div>• Thermal Hold: &gt;65°C for 45 minutes</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Interactive Captain Mode Switcher Mockup -->
+            <div class="lg:col-span-5 p-5 rounded-2xl bg-canvas border border-borderDark space-y-4 shadow-xl">
+              <div class="flex items-center justify-between text-xs text-slate-400 border-b border-borderDark pb-2 font-mono">
+                <span>CAPTAIN APP INTERFACE</span>
+                <span class="flex items-center text-ownlyPink"><span class="w-2 h-2 rounded-full bg-ownlyPink mr-1"></span> ONLINE</span>
+              </div>
+
+              <!-- Smartphone Screen Area -->
+              <div id="captain-screen" class="p-4 rounded-xl bg-card border border-rapidoYellow/40 transition-all space-y-4">
+                <div class="flex items-center justify-between">
+                  <div class="text-xs text-slate-400 font-mono">CURRENT FLEET ROLE</div>
+                  <span id="captain-mode-badge" class="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-rapidoYellow/20 text-rapidoYellow">
+                    COMMUTE BIKE TAXI
+                  </span>
+                </div>
+
+                <div class="text-center py-4">
+                  <div id="captain-mode-icon" class="w-12 h-12 rounded-full bg-rapidoYellow/10 text-rapidoYellow flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="user" class="w-6 h-6"></i>
+                  </div>
+                  <div id="captain-mode-title" class="text-base font-bold text-white">Passenger Trips Active</div>
+                  <div id="captain-mode-sub" class="text-xs text-slateText mt-0.5">Pillion rack collapsed flat. Ready for commuter rides.</div>
+                </div>
+
+                <!-- Interactive Mode Toggle Button -->
+                <button 
+                  id="btn-toggle-captain" 
+                  onclick="toggleCaptainMode()" 
+                  class="w-full py-2.5 rounded-lg text-xs font-bold bg-rapidoYellow text-jetBlack hover:bg-yellow-400 transition-all flex items-center justify-center space-x-2"
+                >
+                  <i data-lucide="repeat" class="w-4 h-4"></i>
+                  <span>Switch to Food Delivery Mode</span>
+                </button>
+
+                <div class="text-[10px] text-center text-slate-500 font-mono">
+                  BLE Sensor Status: <span id="ble-status" class="text-white font-semibold">LATCH_COLLAPSED (OK)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRD 3 Content & Interactive Checkout Mockup -->
+        <div id="content-prd3" class="prd-pane hidden space-y-6">
+          <div class="flex items-center justify-between border-b border-borderDark pb-4">
+            <div>
+              <span class="text-xs font-mono text-ownlyPink font-semibold">FEATURE ID: PRD-OWNLY-DSG-003</span>
+              <h3 class="text-xl font-bold text-white mt-1">Upfront Landed Price Engine & Transparent "Honest Bill" Funnel</h3>
+            </div>
+            <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 text-xs font-mono">Status: Production Design Frozen</span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div class="lg:col-span-6 space-y-4 text-xs sm:text-sm text-slateText leading-relaxed">
+              <h4 class="text-white font-semibold text-sm">1. Dismantling Dark Patterns</h4>
+              <p>
+                Conventional checkout funnels conceal packaging surcharges, rain fees, and the ₹17.58 platform fee until the final payment sheet, 
+                while pre-ticking tips and donations. OWNLY enforces strict upfront landed pricing: the price displayed on the search card is the exact final amount payable.
+              </p>
+
+              <h4 class="text-white font-semibold text-sm">2. Core Funnel Mandates</h4>
+              <ul class="list-disc pl-5 space-y-1.5">
+                <li><strong>Dine-In Price Guarantee:</strong> 100% price parity with in-store physical menus, certified by NRAI.</li>
+                <li><strong>Capped Packaging:</strong> Zero packaging fee promise on all standard orders; no arbitrary ₹40 markups.</li>
+                <li><strong>₹0 Platform Fee:</strong> Permanently displayed in OWNLY Hot Pink with explicit zero-markup declaration.</li>
+                <li><strong>Post-Delivery Tipping Only:</strong> Zero pre-ticked tips or unrequested charity contributions during checkout.</li>
+              </ul>
+
+              <div class="p-4 rounded-xl bg-ownlyPink/10 border border-ownlyPink/30 text-xs">
+                <strong class="text-white">Live Savings Pill:</strong> Displays dynamic comparison against Duopoly benchmarks: 
+                <em>"You are saving ₹100.88 compared to other delivery apps on this order."</em>
+              </div>
+            </div>
+
+            <!-- Smartphone Mockup: Deceptive vs Honest Checkout -->
+            <div class="lg:col-span-6 space-y-3">
+              <!-- PRD 3 Mockup Dual-Anchor Switcher -->
+              <div class="flex items-center justify-between pb-1">
+                <span class="text-[11px] font-mono text-slateText uppercase font-semibold">Interactive Prototype Preview</span>
+                <div class="flex items-center space-x-2 bg-canvas p-1 rounded-lg border border-borderDark">
+                  <button id="btn-prd3-200" onclick="setPrd3Anchor(200)" class="px-2.5 py-1 rounded text-[11px] font-bold bg-ownlyPink text-white transition-all shadow-md shadow-pink-900/30">
+                    ₹200 Single
+                  </button>
+                  <button id="btn-prd3-500" onclick="setPrd3Anchor(500)" class="px-2.5 py-1 rounded text-[11px] font-semibold text-slateText hover:text-white transition-all">
+                    ₹500 Family
+                  </button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Left: Duopoly Mockup -->
+                <div class="p-4 rounded-2xl bg-card border border-duopolyRed/30 space-y-3 text-xs">
+                  <div class="flex justify-between items-center text-[10px] text-duopolyRed font-mono font-bold pb-2 border-b border-borderDark">
+                    <span>SWIGGY / ZOMATO</span>
+                    <span>DECEPTIVE</span>
+                  </div>
+                  <div class="space-y-1.5 font-mono text-[11px] text-slate-300">
+                    <div class="flex justify-between"><span>Menu Item:</span><span id="prd3-duo-menu">₹240.00</span></div>
+                    <div class="flex justify-between text-slate-500"><span>Restaurant Pkg:</span><span id="prd3-duo-pkg">₹25.00</span></div>
+                    <div class="flex justify-between text-slate-500"><span>Delivery Fee:</span><span id="prd3-duo-deliv">₹35.00</span></div>
+                    <div class="flex justify-between text-slate-500"><span>Surge Fee:</span><span id="prd3-duo-surge">₹10.00</span></div>
+                    <div class="flex justify-between text-duopolyRed font-bold"><span>Platform Fee:</span><span id="prd3-duo-platform">₹14.90</span></div>
+                    <div class="flex justify-between text-slate-500"><span>Taxes (GST):</span><span id="prd3-duo-gst">₹27.28</span></div>
+                    <div class="flex justify-between text-duopolyRed"><span>Pre-set Tip:</span><span id="prd3-duo-tip">[x] ₹30.00</span></div>
+                    <div class="flex justify-between text-slate-500"><span>Donation:</span><span id="prd3-duo-don">[x] ₹3.00</span></div>
+                  </div>
+                  <div class="pt-2 border-t border-borderDark flex justify-between font-bold text-sm text-white">
+                    <span>Total:</span>
+                    <span id="prd3-duo-total" class="text-duopolyRed">₹385.18</span>
+                  </div>
+                  <div id="prd3-duo-shock" class="p-1.5 rounded bg-duopolyRed/20 text-center text-[10px] text-duopolyRed font-semibold">
+                    +83.4% Cart Shock Inflation
+                  </div>
+                </div>
+
+                <!-- Right: OWNLY Honest Bill Mockup -->
+                <div class="p-4 rounded-2xl bg-card border border-ownlyPink/50 space-y-3 text-xs shadow-lg glow-pink flex flex-col justify-between">
+                  <div class="space-y-3">
+                    <div class="flex justify-between items-center text-[10px] text-ownlyPink font-mono font-bold pb-2 border-b border-borderDark">
+                      <span>OWNLY CHECKOUT</span>
+                      <span>HONEST BILL</span>
+                    </div>
+                    <div class="space-y-1.5 font-mono text-[11px] text-slate-300">
+                      <div class="flex justify-between"><span>Menu Item (Parity):</span><span id="prd3-own-menu">₹200.00</span></div>
+                      <div class="flex justify-between text-slate-500"><span>Packaging:</span><span id="prd3-own-pkg" class="text-ownlyPink font-semibold">₹0.00 (FREE)</span></div>
+                      <div class="flex justify-between text-slate-500"><span>Direct Delivery:</span><span id="prd3-own-deliv">₹20.00</span></div>
+                      <div class="flex justify-between text-slate-500"><span>Surge:</span><span id="prd3-own-surge">₹0.00</span></div>
+                      <div class="flex justify-between text-ownlyPink font-bold"><span>Platform Fee:</span><span id="prd3-own-platform">FREE (₹0)</span></div>
+                      <div class="flex justify-between text-slate-500"><span>GST:</span><span id="prd3-own-gst">₹16.30</span></div>
+                      <div class="flex justify-between text-slate-500"><span>Tip / Donate:</span><span>Optional</span></div>
+                    </div>
+                    <div class="pt-2 border-t border-borderDark flex justify-between font-bold text-sm text-white">
+                      <span>Total:</span>
+                      <span id="prd3-own-total" class="text-ownlyPink font-mono">₹251.30</span>
+                    </div>
+                    <div id="prd3-own-save" class="p-1.5 rounded bg-ownlyPink/20 border border-ownlyPink/30 text-center text-[10px] text-ownlyPink font-bold font-mono">
+                      You Save ₹133.88 on this order
+                    </div>
+                  </div>
+
+                  <!-- Checkout Prototype CTA Button -->
+                  <button class="w-full py-2.5 px-3 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-ownlyPink to-ownlyPinkDark hover:from-ownlyPinkHover hover:to-pink-700 shadow-lg shadow-pink-950/40 flex items-center justify-center space-x-1.5 transition-all mt-2">
+                    <span>Place Order at Honest Price</span>
+                    <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRD 4 Content -->
+        <div id="content-prd4" class="prd-pane hidden space-y-6">
+          <div class="flex items-center justify-between border-b border-borderDark pb-4">
+            <div>
+              <span class="text-xs font-mono text-rapidoYellow font-semibold">FEATURE ID: PRD-OWNLY-OPS-004</span>
+              <h3 class="text-xl font-bold text-white mt-1">60-Second Automated Kitchen SLA & Delay Recovery Engine</h3>
+            </div>
+            <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 text-xs font-mono">Status: Ready for Build</span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 text-xs sm:text-sm text-slateText leading-relaxed">
+            <div class="space-y-3 p-4 rounded-xl bg-cardSubtle border border-borderDark">
+              <div class="text-white font-bold flex items-center">
+                <span class="w-2 h-2 rounded-full bg-rapidoYellow mr-2"></span>
+                Tier 1 Delay (3-Min Delay)
+              </div>
+              <p>
+                When active prep exceeds predicted KPT by 180 seconds, system fires an acoustic alert on the kitchen KDS tablet. 
+                Merchant must confirm updated status within 60 seconds.
+              </p>
+              <div class="text-[10px] font-mono text-rapidoYellow">Acoustic Tablet Nudge</div>
+            </div>
+
+            <div class="space-y-3 p-4 rounded-xl bg-cardSubtle border border-borderDark">
+              <div class="text-white font-bold flex items-center">
+                <span class="w-2 h-2 rounded-full bg-duopolyRed mr-2"></span>
+                Tier 2 Hard Breach (&gt;5 Min Delay)
+              </div>
+              <p>
+                System automatically activates Captain Paid Waiting mode at ₹3.00/minute. A proactive ₹30 OWNLY Wallet credit 
+                is deposited to customer account with an automated apology.
+              </p>
+              <div class="text-[10px] font-mono text-ownlyPink font-bold">Auto ₹30 Credit Issued</div>
+            </div>
+
+            <div class="space-y-3 p-4 rounded-xl bg-cardSubtle border border-borderDark">
+              <div class="text-white font-bold flex items-center">
+                <span class="w-2 h-2 rounded-full bg-purple-400 mr-2"></span>
+                Secondary Wave Re-Dispatch
+              </div>
+              <p>
+                If waiting driver cancels due to kitchen congestion, zero penalty is applied to driver rating. A secondary wave 
+                dispatch assigns a nearby top-tier captain with a ₹25 express pickup bonus.
+              </p>
+              <div class="text-[10px] font-mono text-purple-400">Zero Rating Penalty</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRD 5 Content -->
+        <div id="content-prd5" class="prd-pane hidden space-y-6">
+          <div class="flex items-center justify-between border-b border-borderDark pb-4">
+            <div>
+              <span class="text-xs font-mono text-purple-400 font-semibold">FEATURE ID: PRD-OWNLY-MER-005</span>
+              <h3 class="text-xl font-bold text-white mt-1">NRAI Merchant Portal & Unified Dynamic Menu Sync</h3>
+            </div>
+            <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 text-xs font-mono">Status: Ready for Integration</span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 text-xs sm:text-sm text-slateText leading-relaxed">
+            <div class="space-y-4">
+              <h4 class="text-white font-semibold text-sm">POS Ecosystem Integration</h4>
+              <p>
+                Direct bi-directional webhooks with India's leading restaurant POS systems: Petpooja, UrbanPiper, POSist, and DotPe. 
+                Restaurants maintain a single master menu; OWNLY automatically ingests changes with sub-second synchronization.
+              </p>
+
+              <h4 class="text-white font-semibold text-sm">Automated Dine-In Parity Verifier</h4>
+              <p>
+                Under the July 2026 NRAI MoU, 0% commission is conditioned on strict dine-in price parity. If a merchant pushes a delivery price 
+                exceeding their in-store dine-in price, the sync engine rejects the SKU with error code <code class="text-duopolyRed font-mono">ERR_PARITY_VIOLATION</code>.
+              </p>
+            </div>
+
+            <div class="p-5 rounded-xl bg-cardSubtle border border-borderDark space-y-3">
+              <div class="text-xs font-mono font-semibold uppercase text-slate-400">Crowdsourced Bill Audit Bounty</div>
+              <p class="text-xs text-slateText">
+                Diners can snap a photo of their physical dine-in bill inside any partner restaurant. If the physical bill proves a price lower than 
+                the OWNLY listed price, the diner earns an instant ₹100 bounty, and the restaurant is automatically flagged for contract review.
+              </p>
+              <div class="p-3 rounded-lg bg-canvas border border-borderDark font-mono text-[11px] text-ownlyPink font-bold">
+                Audit Accuracy: 99.8% Compliance across 100 Alpha Outlets
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- MODULE 5: Click-to-Copy SQL Telemetry Explorer -->
+    <section id="telemetry" class="space-y-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-borderDark pb-5 gap-4">
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="px-2.5 py-1 rounded bg-rapidoYellow/15 text-rapidoYellow text-xs font-mono font-bold border border-rapidoYellow/30">MODULE 05</span>
+            <span class="text-xs text-slateText uppercase tracking-wider font-mono">Production Telemetry</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mt-2">Production PostgreSQL Queries & Analytics Engine</h2>
+          <p class="text-slateText text-sm mt-1 max-w-2xl">
+            Click-to-copy production SQL queries designed for real-time monitoring of cart shock abandonment, KPT prediction accuracy, dual-mode driver yield, and price parity compliance.
+          </p>
+        </div>
+      </div>
+
+      <!-- SQL Tabs & Code Box -->
+      <div class="rounded-2xl bg-card border border-borderDark overflow-hidden">
+        
+        <!-- Tab Bar + Copy Button -->
+        <div class="p-4 border-b border-borderDark bg-cardSubtle flex flex-wrap items-center justify-between gap-3">
+          <div class="flex flex-wrap gap-2">
+            <button onclick="showSqlQuery('q1')" id="tab-q1" class="sql-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-ownlyPink text-white transition-all shadow-md shadow-pink-900/30">
+              1. Cart Shock Drop-Off
+            </button>
+            <button onclick="showSqlQuery('q2')" id="tab-q2" class="sql-tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slateText hover:text-white transition-all">
+              2. KPT Error vs Driver Dwell
+            </button>
+            <button onclick="showSqlQuery('q3')" id="tab-q3" class="sql-tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slateText hover:text-white transition-all">
+              3. Captain Dual-Mode Yield
+            </button>
+            <button onclick="showSqlQuery('q4')" id="tab-q4" class="sql-tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slateText hover:text-white transition-all">
+              4. NRAI Parity Audit
+            </button>
+            <button onclick="showSqlQuery('q5')" id="tab-q5" class="sql-tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slateText hover:text-white transition-all">
+              5. SLA Recovery Audit
+            </button>
+          </div>
+
+          <button onclick="copyCurrentSql()" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-card hover:bg-cardHover text-white border border-borderDark transition-all">
+            <i data-lucide="copy" class="w-3.5 h-3.5 text-ownlyPink"></i>
+            <span id="copy-btn-text">Copy SQL Query</span>
+          </button>
+        </div>
+
+        <!-- SQL Display Canvas -->
+        <div class="p-6 bg-canvas/90 overflow-x-auto">
+          <pre id="sql-code-block" class="font-mono text-xs sm:text-sm text-slate-300 leading-relaxed"></pre>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- MODULE 6: Interactive 30-60-90 Day Execution Checklist & Risk Matrix -->
+    <section id="roadmap" class="space-y-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-borderDark pb-5 gap-4">
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="px-2.5 py-1 rounded bg-rapidoYellow/15 text-rapidoYellow text-xs font-mono font-bold border border-rapidoYellow/30">MODULE 06</span>
+            <span class="text-xs text-slateText uppercase tracking-wider font-mono">Execution Milestones</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mt-2">30-60-90 Day Execution Checklist & Risk Matrix</h2>
+          <p class="text-slateText text-sm mt-1 max-w-2xl">
+            Interactive rollout checklist tracking engineering deliverables from Alpha cluster launch to multi-city metro scale. Toggle tasks to update the live completion index.
+          </p>
+        </div>
+
+        <!-- Completion Ring Display -->
+        <div class="flex items-center space-x-3 bg-card p-3 rounded-xl border border-borderDark self-start md:self-auto font-mono">
+          <div class="text-right">
+            <div class="text-[10px] text-slateText uppercase">Milestone Progress</div>
+            <div id="progress-percent" class="text-lg font-bold text-ownlyPink">58% Complete</div>
+          </div>
+          <div id="progress-ring" class="w-12 h-12 rounded-full flex items-center justify-center p-1 transition-all" style="background: conic-gradient(#FF1E6A 210deg, #222838 210deg 360deg);">
+            <div class="w-full h-full rounded-full bg-card flex items-center justify-center font-bold text-xs text-white">
+              <span id="progress-num">7/12</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Roadmap Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Phase 1 (Days 1 - 30) -->
+        <div class="p-6 rounded-2xl bg-card border border-borderDark space-y-4">
+          <div class="flex items-center justify-between border-b border-borderDark pb-3">
+            <div>
+              <span class="text-[10px] font-mono text-ownlyPink font-bold uppercase">PHASE 1 (DAYS 1-30)</span>
+              <h3 class="text-base font-bold text-white">Hyperlocal Cluster Alpha</h3>
+            </div>
+            <span class="text-xs text-slate-500 font-mono">Koramangala/HSR</span>
+          </div>
+
+          <div class="space-y-3 text-xs text-slate-300">
+            <label class="flex items-start space-x-3 cursor-pointer">
+              <input type="checkbox" checked onchange="updateRoadmapProgress()" class="roadmap-cb mt-0.5 rounded bg-slate-800 border-slate-700 text-ownlyPink focus:ring-0">
+              <span>Onboard first 100 NRAI Restaurant Partners with 0% commission agreement.</span>
+            </label>
+            <label class="flex items-start space-x-3 cursor-pointer">
+              <input type="checkbox" checked onchange="updateRoadmapProgress()" class="roadmap-cb mt-0.5 rounded bg-slate-800 border-slate-700 text-ownlyPink focus:ring-0">
+              <span>Retrofit 500 Rapido Captains with Quick-Latch Pannier (QLP) v1.0.</span>
+            </label>
+            <label class="flex items-start space-x-3 cursor-pointer">
+              <input type="checkbox" checked onchange="updateRoadmapProgress()" class="roadmap-cb mt-0.5 rounded bg-slate-800 border-slate-700 text-ownlyPink focus:ring-0">
+              <span>Deploy Two-Phase KPT Dispatch v1.0 targeting &lt;90s driver dwell.</span>
+            </label>
+            <label class="flex items-start space-x-3 cursor-pointer">
+              <input type="checkbox" checked onchange="updateRoadmapProgress()" class="roadmap-cb mt-0.5 rounded bg-slate-800 border-slate-700 text-ownlyPink focus:ring-0">
+              <span>Launch "Honest Bill" checkout funnel with upfront landed pricing.</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Phase 2 (Days 31 - 60) -->
+        <div class="p-6 rounded-2xl bg-card border border-borderDark space-y-4">
+          <div class="flex items-center justify-between border-b border-borderDark pb-3">
+            <div>
+              <span class="text-[10px] font-mono text-rapidoYellow font-bold uppercase">PHASE 2 (DAYS 31-60)</span>
+              <h3 class="text-base font-bold text-white">Corridor Scale & ML Lock</h3>
+            </div>
+            <span class="text-xs text-slate-500 font-mono">8 Metro Corridors</span>
+          </div>
+
+          <div class="space-y-3 text-xs text-slate-300">
+            <label class="flex items-start space-x-3 cursor-pointer">
+              <input type="checkbox" checked onchange="updateRoadmapProgress()" class="roadmap-cb mt-0.5 rounded bg-slate-800 border-slate-700 text-ownlyPink focus:ring-0">
+              <span>Scale to 1,200 NRAI Outlets across East & South Bengaluru.</span>
+            </label>
+            <label class="flex items-start space-x-3 cursor-pointer">
+              <input type="checkbox" checked onchange="updateRoadmapProgress()" class="roadmap-cb mt-0.5 rounded bg-slate-800 border-slate-700 text-ownlyPink focus:ring-0">
+              <span>Deploy KPT Model v1.2 with real-time KDS tablet acoustic alerts.</span>
+            </label>
+            <label class="flex items-start space-x-3 cursor-pointer">
+              <input type="checkbox" checked onchange="updateRoadmapProgress()" class="roadmap-cb mt-0.5 rounded bg-slate-800 border-slate-700 text-ownlyPink focus:ring-0">
+              <span>Automate 60-second SLA delay recovery micro-credit payouts.</span>
+            </label>
+            <label class="flex items-start space-x-3 cursor-pointer">
+              <input type="checkbox" onchange="updateRoadmapProgress()" class="roadmap-cb mt-0.5 rounded bg-slate-800 border-slate-700 text-ownlyPink focus:ring-0">
+              <span>Launch city-wide billboard PR highlighting the ₹17.58 Duopoly fee contrast.</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Phase 3 (Days 61 - 90) -->
+        <div class="p-6 rounded-2xl bg-card border border-borderDark space-y-4">
+          <div class="flex items-center justify-between border-b border-borderDark pb-3">
+            <div>
+              <span class="text-[10px] font-mono text-purple-400 font-bold uppercase">PHASE 3 (DAYS 61-90)</span>
+              <h3 class="text-base font-bold text-white">Metro Scale & Direct POS</h3>
+            </div>
+            <span class="text-xs text-slate-500 font-mono">BLR + HYD Launch</span>
+          </div>
+
+          <div class="space-y-3 text-xs text-slate-300">
+            <label class="flex items-start space-x-3 cursor-pointer">
+              <input type="checkbox" onchange="updateRoadmapProgress()" class="roadmap-cb mt-0.5 rounded bg-slate-800 border-slate-700 text-ownlyPink focus:ring-0">
+              <span>Launch full metro operations across Bengaluru & Hyderabad (5,000+ units).</span>
+            </label>
+            <label class="flex items-start space-x-3 cursor-pointer">
+              <input type="checkbox" onchange="updateRoadmapProgress()" class="roadmap-cb mt-0.5 rounded bg-slate-800 border-slate-700 text-ownlyPink focus:ring-0">
+              <span>1-Click automated POS menu sync with Petpooja and UrbanPiper.</span>
+            </label>
+            <label class="flex items-start space-x-3 cursor-pointer">
+              <input type="checkbox" onchange="updateRoadmapProgress()" class="roadmap-cb mt-0.5 rounded bg-slate-800 border-slate-700 text-ownlyPink focus:ring-0">
+              <span>Deploy crowdsourced physical bill scan audit bounty for diners.</span>
+            </label>
+            <label class="flex items-start space-x-3 cursor-pointer">
+              <input type="checkbox" onchange="updateRoadmapProgress()" class="roadmap-cb mt-0.5 rounded bg-slate-800 border-slate-700 text-ownlyPink focus:ring-0">
+              <span>Achieve 500,000 Weekly Active Completed Orders (WACO).</span>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Risk Mitigation Matrix Accordion -->
+      <div class="p-6 rounded-2xl bg-card border border-borderDark space-y-4">
+        <div class="flex items-center justify-between border-b border-borderDark pb-3">
+          <h3 class="text-base font-bold text-white flex items-center">
+            <i data-lucide="shield-alert" class="w-4 h-4 text-rapidoYellow mr-2"></i>
+            Strategic Risk Mitigation Architecture
+          </h3>
+          <span class="text-xs text-slate-400 font-mono">4 Core Risk Vectors</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <div class="p-4 rounded-xl bg-cardSubtle border border-borderDark space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white">1. Merchant Dine-In Parity Defection</span>
+              <span class="px-2 py-0.5 rounded bg-duopolyRed/20 text-duopolyRed font-mono font-semibold">HIGH / MED</span>
+            </div>
+            <p class="text-slateText">
+              <strong>Mitigation:</strong> Automated POS ingestion halts marked-up SKUs. Diners receive ₹100 bounty for uploading physical receipts showing lower prices. Strike 1: Freeze zero-commission; Strike 2: Delist.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-cardSubtle border border-borderDark space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white">2. Duopoly Predatory Pricing Response</span>
+              <span class="px-2 py-0.5 rounded bg-duopolyRed/20 text-duopolyRed font-mono font-semibold">HIGH / HIGH</span>
+            </div>
+            <p class="text-slateText">
+              <strong>Mitigation:</strong> Swiggy and Zomato are constrained by quarterly public market EBITDA commitments and cannot match zero platform fees sustainably. Focus marketing on structural honesty over expiring coupons.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-cardSubtle border border-borderDark space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white">3. Fleet Friction with QLP Retrofit</span>
+              <span class="px-2 py-0.5 rounded bg-rapidoYellow/20 text-rapidoYellow font-mono font-semibold">MED / MED</span>
+            </div>
+            <p class="text-slateText">
+              <strong>Mitigation:</strong> Free QLP hardware installation plus ₹1,500 weekly bonus during 30-day onboarding. Emphasize continuous +₹350/day earnings lift from dual-mode utilization.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-cardSubtle border border-borderDark space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white">4. Cloud Kitchen Prep Queue Spikes</span>
+              <span class="px-2 py-0.5 rounded bg-rapidoYellow/20 text-rapidoYellow font-mono font-semibold">MED / HIGH</span>
+            </div>
+            <p class="text-slateText">
+              <strong>Mitigation:</strong> KDS tablet buzzer alerts kitchen staff at T+3 mins. Dynamic Phase 2 dispatch buffer expands dynamically, and automated Captain Wait Pay (₹3/min) guarantees driver trust.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-borderDark bg-cardSubtle py-12 mt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+      <div class="flex items-center space-x-3">
+        <span class="font-bold text-white">OWNLY by Rapido</span>
+        <span>•</span>
+        <span>Systems Architecture & Product Teardown</span>
+        <span>•</span>
+        <span>Version 1.0.0-PROD</span>
+      </div>
+      <div class="flex items-center space-x-6">
+        <a href="teardown.md" class="hover:text-ownlyPink transition-colors">Markdown Spec</a>
+        <a href="#bangalore-milestones" class="hover:text-rapidoYellow transition-colors">Bangalore Metrics</a>
+        <a href="#ownly-promise" class="hover:text-ownlyPink transition-colors">The Promise</a>
+        <a href="#dish-comparison" class="hover:text-ownlyPink transition-colors">Dish Audits</a>
+        <a href="#economics" class="hover:text-ownlyPink transition-colors">Economics Engine</a>
+        <a href="#prds" class="hover:text-ownlyPink transition-colors">PRD Explorer</a>
+        <a href="#telemetry" class="hover:text-ownlyPink transition-colors">SQL Telemetry</a>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- Toast Notification Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="bg-card border border-ownlyPink/40 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3">
+      <i data-lucide="check-circle" class="w-4 h-4 text-ownlyPink"></i>
+      <span id="toast-msg" class="text-xs font-semibold">SQL Query copied to clipboard!</span>
+    </div>
+  </div>
+
+
+  <!-- Application Interactive Scripts -->
+  <script>
+    // Initialize Lucide Icons & Components on DOM ready
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      initDemandChart();
+      updateCalculator(200);
+      showSqlQuery('q1');
+      updateRoadmapProgress();
+      setPrd3Anchor(200);
+    });
+
+    // 0. Dish Comparison Controller (Real Bangalore Pricing)
+    let dishesRevealedState = { 1: false, 2: false, 3: false };
+
+    function toggleDish(id) {
+      const hiddenEl = document.getElementById('dish-hidden-' + id);
+      const revealedEl = document.getElementById('dish-revealed-' + id);
+      const boxEl = document.getElementById('dish-box-' + id);
+      if (!hiddenEl || !revealedEl) return;
+
+      dishesRevealedState[id] = !dishesRevealedState[id];
+      if (dishesRevealedState[id]) {
+        hiddenEl.classList.add('hidden');
+        revealedEl.classList.remove('hidden');
+        if (boxEl) {
+          boxEl.classList.add('border-ownlyPink/50', 'bg-ownlyPink/5');
+          boxEl.classList.remove('border-borderDark', 'bg-cardSubtle');
+        }
+      } else {
+        revealedEl.classList.add('hidden');
+        hiddenEl.classList.remove('hidden');
+        if (boxEl) {
+          boxEl.classList.remove('border-ownlyPink/50', 'bg-ownlyPink/5');
+          boxEl.classList.add('border-borderDark', 'bg-cardSubtle');
+        }
+      }
+      updateAllDishesButtonText();
+      lucide.createIcons();
+    }
+
+    function toggleAllDishes() {
+      const anyUnrevealed = Object.values(dishesRevealedState).some(v => !v);
+      const targetState = anyUnrevealed;
+      [1, 2, 3].forEach(id => {
+        dishesRevealedState[id] = targetState;
+        const hiddenEl = document.getElementById('dish-hidden-' + id);
+        const revealedEl = document.getElementById('dish-revealed-' + id);
+        const boxEl = document.getElementById('dish-box-' + id);
+        if (hiddenEl && revealedEl) {
+          if (targetState) {
+            hiddenEl.classList.add('hidden');
+            revealedEl.classList.remove('hidden');
+            if (boxEl) {
+              boxEl.classList.add('border-ownlyPink/50', 'bg-ownlyPink/5');
+              boxEl.classList.remove('border-borderDark', 'bg-cardSubtle');
+            }
+          } else {
+            revealedEl.classList.add('hidden');
+            hiddenEl.classList.remove('hidden');
+            if (boxEl) {
+              boxEl.classList.remove('border-ownlyPink/50', 'bg-ownlyPink/5');
+              boxEl.classList.add('border-borderDark', 'bg-cardSubtle');
+            }
+          }
+        }
+      });
+      updateAllDishesButtonText();
+      lucide.createIcons();
+    }
+
+    function updateAllDishesButtonText() {
+      const btnText = document.getElementById('btn-toggle-all-text');
+      const btn = document.getElementById('btn-toggle-all-dishes');
+      if (!btnText) return;
+      const allRevealed = Object.values(dishesRevealedState).every(v => v);
+      btnText.innerText = allRevealed ? "Hide All Ownly Prices" : "Reveal All Ownly Prices";
+      if (btn) {
+        const iconContainer = btn.querySelector('svg, i');
+        if (iconContainer) {
+          iconContainer.outerHTML = `<i data-lucide="${allRevealed ? 'eye-off' : 'eye'}" class="w-4 h-4 text-ownlyPink"></i>`;
+        }
+      }
+    }
+
+    // 1. Calculator Engine with Accurate Dual-Anchor Modeling
+    function updateCalculator(val) {
+      const base = parseFloat(val);
+      document.getElementById('slider-val-display').innerText = '₹' + Math.round(base);
+
+      // Synchronize Preset Buttons
+      const btn200 = document.getElementById('preset-200');
+      const btn500 = document.getElementById('preset-500');
+      if (btn200 && btn500) {
+        const activeClass = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-ownlyPink text-white transition-all shadow-sm shadow-pink-900/30";
+        const inactiveClass = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slateText hover:text-white transition-all";
+        if (Math.round(base) === 200) {
+          btn200.className = activeClass;
+          btn500.className = inactiveClass;
+        } else if (Math.round(base) === 500) {
+          btn500.className = activeClass;
+          btn200.className = inactiveClass;
+        } else {
+          btn200.className = inactiveClass;
+          btn500.className = inactiveClass;
+        }
+      }
+
+      // Duopoly calculations (Anchored to Model A at ₹200 and Model B at ₹500)
+      const duoMarkup = base * 0.20; // 20% menu markup
+      const duoMenu = base + duoMarkup;
+      const duoPack = base <= 250 ? 25.0 : (base <= 600 ? 40.0 : (base <= 1000 ? 50.0 : 65.0));
+      const duoDeliv = base <= 250 ? 35.0 : (base <= 600 ? 45.0 : 55.0);
+      const duoSurge = base <= 250 ? 10.0 : (base <= 600 ? 20.0 : 25.0);
+      const duoPlatform = 14.90; // Base platform fee before GST (₹14.90 * 1.18 = ₹17.58 locked parity)
+      const duoGstFood = duoMenu * 0.05;
+      const duoGstServ = (duoPack + duoDeliv + duoSurge + duoPlatform) * 0.18;
+      const duoTotal = duoMenu + duoPack + duoDeliv + duoSurge + duoPlatform + duoGstFood + duoGstServ;
+
+      // Dine-in calculations
+      const dineinMenu = base;
+      const dineinGstFood = base * 0.05;
+      const dineinTotal = dineinMenu + dineinGstFood;
+
+      // OWNLY calculations (Zero commission, 0% markup, capped packaging, pass-through delivery, ₹0 platform)
+      const ownlyMenu = base;
+      const ownlyPack = base <= 250 ? 15.0 : (base <= 600 ? 25.0 : 35.0);
+      const ownlyDeliv = base <= 250 ? 20.0 : (base <= 600 ? 25.0 : 35.0);
+      const ownlySurge = 0.0;
+      const ownlyPlatform = 0.0;
+      const ownlyGstFood = ownlyMenu * 0.05;
+      const ownlyGstServ = (ownlyPack + ownlyDeliv) * 0.18;
+      const ownlyTotal = ownlyMenu + ownlyPack + ownlyDeliv + ownlySurge + ownlyPlatform + ownlyGstFood + ownlyGstServ;
+
+      const customerSavings = duoTotal - ownlyTotal;
+      const shockPct = ((duoTotal - dineinTotal) / dineinTotal) * 100.0;
+      const ownlyInflationPct = ((ownlyTotal - dineinTotal) / dineinTotal) * 100.0;
+
+      // Restaurant Take Home Economics
+      const duoPromoWithholding = base <= 250 ? 12.0 : (base <= 600 ? 25.0 : 40.0);
+      const duoRestPayout = (duoMenu * 0.76) - (duoMenu * 0.018) + duoPack - duoPromoWithholding; // 24% commission + 1.8% gateway + promo withholding
+      const ownlyRestPayout = (ownlyMenu * 1.0) - (ownlyMenu * 0.018) + ownlyPack; // 0% commission + 1.8% gateway + retained packaging
+      const restGain = ownlyRestPayout - duoRestPayout;
+      const restGainPct = (restGain / base) * 100.0;
+
+      // Update DOM Text
+      document.getElementById('savings-display').innerText = '₹' + customerSavings.toFixed(2);
+      document.getElementById('shock-display').innerText = '+' + shockPct.toFixed(1) + '%';
+      document.getElementById('restaurant-gain-display').innerText = '+₹' + restGain.toFixed(2) + ' (+' + restGainPct.toFixed(1) + '%)';
+
+      // Update Table Rows
+      document.getElementById('row-dinein-menu').innerText = '₹' + dineinMenu.toFixed(2);
+      document.getElementById('row-duopoly-menu').innerText = '₹' + duoMenu.toFixed(2);
+      document.getElementById('row-ownly-menu').innerText = '₹' + ownlyMenu.toFixed(2);
+
+      document.getElementById('row-duopoly-pack').innerText = '₹' + duoPack.toFixed(2);
+      document.getElementById('row-ownly-pack').innerText = '₹' + ownlyPack.toFixed(2);
+
+      document.getElementById('row-duopoly-deliv').innerText = '₹' + duoDeliv.toFixed(2);
+      document.getElementById('row-ownly-deliv').innerText = '₹' + ownlyDeliv.toFixed(2);
+
+      document.getElementById('row-duopoly-surge').innerText = '₹' + duoSurge.toFixed(2);
+      document.getElementById('row-ownly-surge').innerText = '₹' + ownlySurge.toFixed(2);
+
+      document.getElementById('row-dinein-gst-food').innerText = '₹' + dineinGstFood.toFixed(2);
+      document.getElementById('row-duopoly-gst-food').innerText = '₹' + duoGstFood.toFixed(2);
+      document.getElementById('row-ownly-gst-food').innerText = '₹' + ownlyGstFood.toFixed(2);
+
+      document.getElementById('row-duopoly-gst-serv').innerText = '₹' + duoGstServ.toFixed(2);
+      document.getElementById('row-ownly-gst-serv').innerText = '₹' + ownlyGstServ.toFixed(2);
+
+      document.getElementById('row-dinein-total').innerText = '₹' + dineinTotal.toFixed(2);
+      document.getElementById('row-duopoly-total').innerText = '₹' + duoTotal.toFixed(2);
+      document.getElementById('row-ownly-total').innerText = '₹' + ownlyTotal.toFixed(2);
+
+      // Update Visual Bars
+      document.getElementById('bar-duopoly-text').innerText = '₹' + duoTotal.toFixed(2);
+      document.getElementById('bar-ownly-text').innerText = '₹' + ownlyTotal.toFixed(2);
+      const barDuoPct = document.getElementById('bar-duopoly-pct');
+      const barOwnlyPct = document.getElementById('bar-ownly-pct');
+      if (barDuoPct) barDuoPct.innerText = '+' + shockPct.toFixed(1) + '% vs Dine-in';
+      if (barOwnlyPct) barOwnlyPct.innerText = '+' + ownlyInflationPct.toFixed(1) + '% vs Dine-in';
+
+      const duoFoodShare = ((duoMenu + duoGstFood) / duoTotal) * 100;
+      const duoFeeShare = Math.max(0, 100 - duoFoodShare);
+      document.getElementById('bar-duopoly-food').style.width = duoFoodShare + '%';
+      document.getElementById('bar-duopoly-fees').style.width = duoFeeShare + '%';
+
+      const ownlyFoodShare = ((ownlyMenu + ownlyGstFood) / ownlyTotal) * 100;
+      const ownlyFeeShare = Math.max(0, 100 - ownlyFoodShare);
+      document.getElementById('bar-ownly-food').style.width = ownlyFoodShare + '%';
+      document.getElementById('bar-ownly-fees').style.width = ownlyFeeShare + '%';
+    }
+
+    function applyPreset(val) {
+      document.getElementById('order-slider').value = val;
+      updateCalculator(val);
+    }
+
+    // PRD 3 Prototype Dual-Anchor Switcher
+    function setPrd3Anchor(val) {
+      const btn200 = document.getElementById('btn-prd3-200');
+      const btn500 = document.getElementById('btn-prd3-500');
+      if (val === 200) {
+        if (btn200) btn200.className = "px-2.5 py-1 rounded text-[11px] font-semibold bg-ownlyPink text-white transition-all shadow-sm shadow-pink-900/30";
+        if (btn500) btn500.className = "px-2.5 py-1 rounded text-[11px] font-semibold text-slateText hover:text-white transition-all";
+        const duoMenu = document.getElementById('prd3-duo-menu');
+        if (duoMenu) {
+          duoMenu.innerText = "₹240.00";
+          document.getElementById('prd3-duo-pkg').innerText = "₹25.00";
+          document.getElementById('prd3-duo-deliv').innerText = "₹35.00";
+          document.getElementById('prd3-duo-surge').innerText = "₹10.00";
+          document.getElementById('prd3-duo-platform').innerText = "₹14.90";
+          document.getElementById('prd3-duo-gst').innerText = "₹27.28";
+          document.getElementById('prd3-duo-tip').innerText = "[x] ₹30.00";
+          document.getElementById('prd3-duo-don').innerText = "[x] ₹3.00";
+          document.getElementById('prd3-duo-total').innerText = "₹385.18";
+          document.getElementById('prd3-duo-shock').innerText = "+83.4% Cart Shock Inflation";
+
+          document.getElementById('prd3-own-menu').innerText = "₹200.00";
+          document.getElementById('prd3-own-pkg').innerText = "₹15.00";
+          document.getElementById('prd3-own-deliv').innerText = "₹20.00";
+          document.getElementById('prd3-own-surge').innerText = "₹0.00";
+          document.getElementById('prd3-own-platform').innerText = "FREE (₹0)";
+          document.getElementById('prd3-own-gst').innerText = "₹16.30";
+          document.getElementById('prd3-own-total').innerText = "₹251.30";
+          document.getElementById('prd3-own-save').innerText = "You Save ₹133.88 on this order";
+        }
+      } else {
+        if (btn500) btn500.className = "px-2.5 py-1 rounded text-[11px] font-semibold bg-ownlyPink text-white transition-all shadow-sm shadow-pink-900/30";
+        if (btn200) btn200.className = "px-2.5 py-1 rounded text-[11px] font-semibold text-slateText hover:text-white transition-all";
+        const duoMenu = document.getElementById('prd3-duo-menu');
+        if (duoMenu) {
+          duoMenu.innerText = "₹600.00";
+          document.getElementById('prd3-duo-pkg').innerText = "₹40.00";
+          document.getElementById('prd3-duo-deliv').innerText = "₹45.00";
+          document.getElementById('prd3-duo-surge').innerText = "₹20.00";
+          document.getElementById('prd3-duo-platform').innerText = "₹14.90";
+          document.getElementById('prd3-duo-gst').innerText = "₹51.58";
+          document.getElementById('prd3-duo-tip').innerText = "[x] ₹40.00";
+          document.getElementById('prd3-duo-don').innerText = "[x] ₹5.00";
+          document.getElementById('prd3-duo-total').innerText = "₹816.48";
+          document.getElementById('prd3-duo-shock').innerText = "+55.5% Cart Shock Inflation";
+
+          document.getElementById('prd3-own-menu').innerText = "₹500.00";
+          document.getElementById('prd3-own-pkg').innerText = "₹25.00";
+          document.getElementById('prd3-own-deliv').innerText = "₹25.00";
+          document.getElementById('prd3-own-surge').innerText = "₹0.00";
+          document.getElementById('prd3-own-platform').innerText = "FREE (₹0)";
+          document.getElementById('prd3-own-gst').innerText = "₹34.00";
+          document.getElementById('prd3-own-total').innerText = "₹584.00";
+          document.getElementById('prd3-own-save').innerText = "You Save ₹232.48 on this order";
+        }
+      }
+    }
+
+    // 2. Chart.js Demand Curves
+    let demandChartInstance = null;
+    const hours = [
+      '00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00',
+      '10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00',
+      '20:00','21:00','22:00','23:00'
+    ];
+    const bikeTaxiData = [4, 2, 1, 1, 3, 10, 24, 52, 92, 96, 78, 42, 28, 25, 24, 38, 64, 94, 98, 86, 45, 28, 14, 8];
+    const foodDeliveryData = [12, 6, 2, 1, 1, 2, 5, 12, 18, 22, 36, 68, 94, 96, 78, 32, 24, 28, 42, 74, 96, 98, 74, 36];
+    const combinedData = [14, 6, 2, 2, 4, 11, 26, 56, 94, 98, 88, 72, 96, 98, 84, 52, 68, 96, 98, 94, 98, 98, 78, 38];
+
+    function initDemandChart() {
+      const ctx = document.getElementById('demandChart').getContext('2d');
+      demandChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: hours,
+          datasets: [
+            {
+              label: 'Bike Taxi Commute Demand',
+              data: bikeTaxiData,
+              borderColor: '#FFD600',
+              backgroundColor: 'rgba(255, 214, 0, 0.12)',
+              borderWidth: 2.5,
+              tension: 0.4,
+              fill: true,
+              pointRadius: 2,
+            },
+            {
+              label: 'Food Delivery Demand',
+              data: foodDeliveryData,
+              borderColor: '#FF1E6A',
+              backgroundColor: 'rgba(255, 30, 106, 0.12)',
+              borderWidth: 2.5,
+              tension: 0.4,
+              fill: true,
+              pointRadius: 2,
+            },
+            {
+              label: 'Combined Dual-Mode Fleet Utilization',
+              data: combinedData,
+              borderColor: '#FFFFFF',
+              borderDash: [5, 5],
+              borderWidth: 2,
+              tension: 0.4,
+              fill: false,
+              pointRadius: 0,
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false,
+          },
+          plugins: {
+            legend: {
+              labels: {
+                color: '#94A3B8',
+                font: { family: 'Inter', size: 11 }
+              }
+            },
+            tooltip: {
+              backgroundColor: '#111827',
+              borderColor: '#1F293D',
+              borderWidth: 1,
+              titleColor: '#F8FAFC',
+              bodyColor: '#94A3B8',
+              padding: 10,
+              bodyFont: { family: 'JetBrains Mono', size: 11 }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(31, 41, 61, 0.5)' },
+              ticks: { color: '#64748B', font: { family: 'JetBrains Mono', size: 10 } }
+            },
+            y: {
+              grid: { color: 'rgba(31, 41, 61, 0.5)' },
+              ticks: { 
+                color: '#64748B', 
+                font: { family: 'JetBrains Mono', size: 10 },
+                callback: function(value) { return value + '%'; }
+              },
+              min: 0,
+              max: 105
+            }
+          }
+        }
+      });
+    }
+
+    function setChartDataset(mode) {
+      const btnAll = document.getElementById('btn-chart-all');
+      const btnBike = document.getElementById('btn-chart-bike');
+      const btnFood = document.getElementById('btn-chart-food');
+      const btnComb = document.getElementById('btn-chart-combined');
+
+      [btnAll, btnBike, btnFood, btnComb].forEach(b => {
+        b.className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slateText hover:text-white transition-all";
+      });
+
+      if (!demandChartInstance) return;
+
+      if (mode === 'all') {
+        btnAll.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-700 text-white transition-all";
+        demandChartInstance.setDatasetVisibility(0, true);
+        demandChartInstance.setDatasetVisibility(1, true);
+        demandChartInstance.setDatasetVisibility(2, true);
+      } else if (mode === 'bike') {
+        btnBike.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-rapidoYellow text-jetBlack transition-all";
+        demandChartInstance.setDatasetVisibility(0, true);
+        demandChartInstance.setDatasetVisibility(1, false);
+        demandChartInstance.setDatasetVisibility(2, false);
+      } else if (mode === 'food') {
+        btnFood.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-ownlyPink text-white transition-all";
+        demandChartInstance.setDatasetVisibility(0, false);
+        demandChartInstance.setDatasetVisibility(1, true);
+        demandChartInstance.setDatasetVisibility(2, false);
+      } else if (mode === 'combined') {
+        btnComb.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-700 text-white transition-all";
+        demandChartInstance.setDatasetVisibility(0, false);
+        demandChartInstance.setDatasetVisibility(1, false);
+        demandChartInstance.setDatasetVisibility(2, true);
+      }
+      demandChartInstance.update();
+    }
+
+    // 3. Dispatch Mode Visualizer Toggle with 5-Stage Life-cycle
+    function setDispatchMode(mode) {
+      const btnOwnly = document.getElementById('btn-dispatch-ownly');
+      const btnDuo = document.getElementById('btn-dispatch-duopoly');
+      const banner = document.getElementById('dispatch-banner');
+      const icon = document.getElementById('dispatch-icon');
+      const title = document.getElementById('dispatch-title');
+      const desc = document.getElementById('dispatch-desc');
+      const dwell = document.getElementById('dispatch-dwell');
+
+      const step2Dot = document.getElementById('step2-dot');
+      const step2Time = document.getElementById('step2-time');
+      const step2Title = document.getElementById('step2-title');
+      const step2Desc = document.getElementById('step2-desc');
+      const step2Tag = document.getElementById('step2-tag');
+
+      const step3 = document.getElementById('timeline-step3');
+      const step3Dot = document.getElementById('step3-dot');
+      const step3Time = document.getElementById('step3-time');
+      const step3Title = document.getElementById('step3-title');
+      const step3Desc = document.getElementById('step3-desc');
+      const step3Tag = document.getElementById('step3-tag');
+
+      const step4 = document.getElementById('timeline-step4');
+      const step4Dot = document.getElementById('step4-dot');
+      const step4Time = document.getElementById('step4-time');
+      const step4Title = document.getElementById('step4-title');
+      const step4Desc = document.getElementById('step4-desc');
+      const step4Tag = document.getElementById('step4-tag');
+
+      const step5 = document.getElementById('timeline-step5');
+      const step5Dot = document.getElementById('step5-dot');
+      const step5Time = document.getElementById('step5-time');
+      const step5Title = document.getElementById('step5-title');
+      const step5Desc = document.getElementById('step5-desc');
+      const step5Tag = document.getElementById('step5-tag');
+
+      const statDwell = document.getElementById('stat-dwell-time');
+      const statDwellSub = document.getElementById('stat-dwell-sub');
+      const statEph = document.getElementById('stat-eph');
+      const statEphSub = document.getElementById('stat-eph-sub');
+      const statTemp = document.getElementById('stat-temp');
+
+      if (mode === 'ownly') {
+        btnOwnly.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-ownlyPink text-white transition-all shadow-sm shadow-pink-900/30";
+        btnDuo.className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slateText hover:text-white transition-all";
+
+        banner.className = "p-4 rounded-xl bg-ownlyPink/10 border border-ownlyPink/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4";
+        icon.className = "p-2 rounded-lg bg-ownlyPink/20 text-ownlyPink";
+        icon.innerHTML = '<i data-lucide="shield-check" class="w-5 h-5"></i>';
+        title.innerText = "OWNLY Active: Two-Phase Predictive JIT Dispatch Protocol";
+        desc.innerText = "Order held in silent ML queue. Rider broadcast triggered at (Predicted KPT - Transit ETA - 60s).";
+        dwell.innerText = "48 Seconds";
+        dwell.className = "text-xl font-bold text-ownlyPink";
+
+        // Step 2: ML Inference
+        step2Time.innerText = "T + 01:00";
+        step2Dot.className = "w-2.5 h-2.5 rounded-full bg-rapidoYellow";
+        step2Title.innerText = "ML KPT Inference";
+        step2Desc.innerText = "XGBoost estimates prep duration: 17 mins.";
+        step2Tag.innerText = "Queue Depth: 4 Orders";
+        step2Tag.className = "text-[10px] font-mono text-rapidoYellow";
+
+        // Step 3: Phase 1 Silent Prep
+        step3.className = "p-4 rounded-xl bg-ownlyPink/10 border border-ownlyPink/40 flex flex-col justify-between space-y-3 transition-all";
+        step3Time.innerText = "T + 07:00";
+        step3Dot.className = "w-2.5 h-2.5 rounded-full bg-ownlyPink";
+        step3Title.innerText = "Phase 1: Silent Prep";
+        step3Desc.innerText = "NO rider assigned. Captain completes passenger trip nearby.";
+        step3Tag.innerText = "Zero Driver Dwell";
+        step3Tag.className = "text-[10px] font-mono text-ownlyPink";
+
+        // Step 4: Phase 2 JIT Trigger
+        step4.className = "p-4 rounded-xl bg-cardSubtle border border-borderDark flex flex-col justify-between space-y-3 hover:border-slate-600 transition-all";
+        step4Time.innerText = "T + 12:30";
+        step4Dot.className = "w-2.5 h-2.5 rounded-full bg-ownlyPink animate-pulse";
+        step4Title.innerText = "Phase 2: JIT Trigger";
+        step4Desc.innerText = "Order broadcast to Captain 4 mins away. Transit matches finish.";
+        step4Tag.innerText = "Target ETA: 16:30";
+        step4Tag.className = "text-[10px] font-mono text-slate-400";
+
+        // Step 5: Zero-Wait Handshake
+        step5.className = "p-4 rounded-xl bg-cardSubtle border border-borderDark flex flex-col justify-between space-y-3 hover:border-slate-600 transition-all";
+        step5Time.innerText = "T + 17:00";
+        step5Dot.className = "w-2.5 h-2.5 rounded-full bg-ownlyPink";
+        step5Title.innerText = "Zero-Wait Handshake";
+        step5Desc.innerText = "Captain grabs packed food from counter. Departs in <50s.";
+        step5Tag.innerText = "Thermal State: 68°C";
+        step5Tag.className = "text-[10px] font-mono text-ownlyPink";
+
+        statDwell.innerText = "0.8 mins (48s)";
+        statDwell.className = "text-2xl font-bold text-ownlyPink mt-1 font-mono";
+        statDwellSub.innerText = "vs. 13.5 mins on Zomato/Swiggy";
+        statEph.innerText = "₹142.50 / hr";
+        statEphSub.innerText = "+28.4% capacity expansion";
+        statTemp.innerText = "65.4° C";
+      } else {
+        btnDuo.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-duopolyRed text-white transition-all";
+        btnOwnly.className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slateText hover:text-white transition-all";
+
+        banner.className = "p-4 rounded-xl bg-duopolyRed/10 border border-duopolyRed/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4";
+        icon.className = "p-2 rounded-lg bg-duopolyRed/20 text-duopolyRed";
+        icon.innerHTML = '<i data-lucide="alert-triangle" class="w-5 h-5"></i>';
+        title.innerText = "Duopoly Model: Brute-Force Immediate Dispatch";
+        desc.innerText = "Order broadcast instantly to nearest rider. Driver arrives 12 mins before food is cooked.";
+        dwell.innerText = "13.5 Minutes";
+        dwell.className = "text-xl font-bold text-duopolyRed";
+
+        // Step 2: Immediate Ping
+        step2Time.innerText = "T + 00:30";
+        step2Dot.className = "w-2.5 h-2.5 rounded-full bg-duopolyRed";
+        step2Title.innerText = "Brute-Force Broadcast";
+        step2Desc.innerText = "Dispatches nearest rider immediately regardless of cook time.";
+        step2Tag.innerText = "Uncalibrated Dispatch";
+        step2Tag.className = "text-[10px] font-mono text-duopolyRed";
+
+        // Step 3: Premature Arrival
+        step3.className = "p-4 rounded-xl bg-duopolyRed/10 border border-duopolyRed/40 flex flex-col justify-between space-y-3 transition-all";
+        step3Time.innerText = "T + 04:00";
+        step3Dot.className = "w-2.5 h-2.5 rounded-full bg-duopolyRed animate-ping";
+        step3Title.innerText = "Premature Arrival";
+        step3Desc.innerText = "Rider arrives at T+4. Kitchen has barely started prep.";
+        step3Tag.innerText = "Idle Queue Begins";
+        step3Tag.className = "text-[10px] font-mono text-duopolyRed";
+
+        // Step 4: The Phantom Wait
+        step4.className = "p-4 rounded-xl bg-duopolyRed/10 border border-duopolyRed/40 flex flex-col justify-between space-y-3 transition-all";
+        step4Time.innerText = "T + 04:00 - 17:00";
+        step4Dot.className = "w-2.5 h-2.5 rounded-full bg-duopolyRed";
+        step4Title.innerText = "The Phantom Wait";
+        step4Desc.innerText = "Rider sits idle outside cloud kitchen for 13+ mins uncompensated.";
+        step4Tag.innerText = "Uncompensated Wait Time";
+        step4Tag.className = "text-[10px] font-mono text-duopolyRed";
+
+        // Step 5: Lukewarm Handshake
+        step5.className = "p-4 rounded-xl bg-cardSubtle border border-borderDark flex flex-col justify-between space-y-3 hover:border-slate-600 transition-all";
+        step5Time.innerText = "T + 17:30";
+        step5Dot.className = "w-2.5 h-2.5 rounded-full bg-duopolyRed";
+        step5Title.innerText = "Tardy Handshake";
+        step5Desc.innerText = "Frustrated rider collects bag. Order departure delayed.";
+        step5Tag.innerText = "Thermal Drop: 52°C";
+        step5Tag.className = "text-[10px] font-mono text-duopolyRed";
+
+        statDwell.innerText = "13.5 mins";
+        statDwell.className = "text-2xl font-bold text-duopolyRed mt-1 font-mono";
+        statDwellSub.innerText = "Lost earnings: -₹42.00/shift";
+        statEph.innerText = "₹78.20 / hr";
+        statEphSub.innerText = "-22.1% due to idle queues";
+        statTemp.innerText = "52.1° C";
+      }
+      lucide.createIcons();
+    }
+
+    // 4. PRD Tabs Controller
+    function showPrd(id) {
+      document.querySelectorAll('.prd-pane').forEach(el => el.classList.add('hidden'));
+      document.getElementById('content-' + id).classList.remove('hidden');
+
+      document.querySelectorAll('.prd-tab-btn').forEach(btn => {
+        btn.className = "prd-tab-btn px-4 py-2 rounded-lg text-xs font-semibold text-slateText hover:text-white transition-all";
+      });
+
+      const activeBtn = document.getElementById('tab-' + id);
+      if (activeBtn) {
+        activeBtn.className = "prd-tab-btn px-4 py-2 rounded-lg text-xs font-semibold bg-ownlyPink text-white transition-all shadow-sm shadow-pink-900/30";
+      }
+      lucide.createIcons();
+    }
+
+    // Captain Mode Switcher Interactive Simulation
+    let captainMode = 'COMMUTE';
+    function toggleCaptainMode() {
+      const screen = document.getElementById('captain-screen');
+      const badge = document.getElementById('captain-mode-badge');
+      const icon = document.getElementById('captain-mode-icon');
+      const title = document.getElementById('captain-mode-title');
+      const sub = document.getElementById('captain-mode-sub');
+      const btn = document.getElementById('btn-toggle-captain');
+      const ble = document.getElementById('ble-status');
+
+      if (captainMode === 'COMMUTE') {
+        captainMode = 'FOOD';
+        screen.className = "p-4 rounded-xl bg-card border border-ownlyPink/50 transition-all space-y-4 glow-pink";
+        badge.className = "px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-ownlyPink/20 text-ownlyPink";
+        badge.innerText = "FOOD DELIVERY CARGO";
+        icon.className = "w-12 h-12 rounded-full bg-ownlyPink/10 text-ownlyPink flex items-center justify-center mx-auto mb-2";
+        icon.innerHTML = '<i data-lucide="package" class="w-6 h-6"></i>';
+        title.innerText = "Food Delivery Active";
+        sub.innerText = "52L thermal cargo rack expanded. Ready for kitchen pickups.";
+        btn.className = "w-full py-2.5 rounded-lg text-xs font-bold bg-ownlyPink text-white hover:bg-ownlyPinkHover transition-all flex items-center justify-center space-x-2";
+        btn.innerHTML = '<i data-lucide="repeat" class="w-4 h-4"></i><span>Switch to Passenger Commute Mode</span>';
+        ble.innerText = "LATCH_EXPANDED_52L (OK)";
+        ble.className = "text-ownlyPink font-semibold";
+      } else {
+        captainMode = 'COMMUTE';
+        screen.className = "p-4 rounded-xl bg-card border border-rapidoYellow/40 transition-all space-y-4 glow-yellow";
+        badge.className = "px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-rapidoYellow/20 text-rapidoYellow";
+        badge.innerText = "COMMUTE BIKE TAXI";
+        icon.className = "w-12 h-12 rounded-full bg-rapidoYellow/10 text-rapidoYellow flex items-center justify-center mx-auto mb-2";
+        icon.innerHTML = '<i data-lucide="user" class="w-6 h-6"></i>';
+        title.innerText = "Passenger Trips Active";
+        sub.innerText = "Pillion rack collapsed flat. Ready for commuter rides.";
+        btn.className = "w-full py-2.5 rounded-lg text-xs font-bold bg-rapidoYellow text-jetBlack hover:bg-rapidoYellowHover transition-all flex items-center justify-center space-x-2";
+        btn.innerHTML = '<i data-lucide="repeat" class="w-4 h-4"></i><span>Switch to Food Delivery Mode</span>';
+        ble.innerText = "LATCH_COLLAPSED (OK)";
+        ble.className = "text-white font-semibold";
+      }
+      lucide.createIcons();
+    }
+
+    // 5. SQL Telemetry Explorer
+    const sqlQueries = {
+      q1: `-- Query 1: Cart Shock Drop-off Rate by Price Tier
+WITH order_funnel_summary AS (
+    SELECT 
+        CASE 
+            WHEN food_subtotal_paise <= 20000 THEN 'BAND_1: <= ₹200 (Single-Diner)'
+            WHEN food_subtotal_paise <= 50000 THEN 'BAND_2: ₹201 - ₹500 (Dual-Diner)'
+            ELSE 'BAND_3: > ₹500 (Family/Group)'
+        END AS price_band,
+        COUNT(DISTINCT order_id) AS total_sessions_started,
+        COUNT(DISTINCT CASE WHEN step_name = 'bill_breakdown_view' THEN order_id END) AS viewed_bill_count,
+        COUNT(DISTINCT CASE WHEN step_name = 'payment_authorized' THEN order_id END) AS completed_orders_count,
+        AVG(gross_landed_total_paise - food_subtotal_paise) / 100.0 AS avg_surcharge_inflation_inr,
+        AVG(duopoly_projected_savings_paise) / 100.0 AS avg_customer_savings_inr
+    FROM analytics.order_funnel_events
+    WHERE event_date >= CURRENT_DATE - INTERVAL '30 days'
+    GROUP BY 1
+)
+SELECT 
+    price_band,
+    total_sessions_started,
+    viewed_bill_count,
+    completed_orders_count,
+    ROUND((1.0 - (completed_orders_count::NUMERIC / NULLIF(viewed_bill_count, 0))) * 100.0, 2) AS cart_shock_abandonment_pct,
+    ROUND(avg_surcharge_inflation_inr, 2) AS avg_surcharge_inflation_inr,
+    ROUND(avg_customer_savings_inr, 2) AS avg_customer_savings_inr
+FROM order_funnel_summary
+ORDER BY price_band ASC;`,
+
+      q2: `-- Query 2: KPT Prediction Model Accuracy & Captain Dwell Reduction
+SELECT 
+    m.trade_name,
+    COUNT(t.order_id) AS total_evaluated_orders,
+    ROUND(AVG(t.predicted_kpt_seconds) / 60.0, 2) AS avg_predicted_kpt_mins,
+    ROUND(AVG(t.actual_prep_time_seconds) / 60.0, 2) AS avg_actual_kpt_mins,
+    ROUND(AVG(ABS(t.actual_prep_time_seconds - t.predicted_kpt_seconds)) / 60.0, 2) AS mean_absolute_error_kpt_mins,
+    ROUND(PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY t.captain_pickup_dwell_seconds), 1) AS p95_captain_dwell_seconds,
+    ROUND(AVG(t.captain_pickup_dwell_seconds), 1) AS avg_captain_dwell_seconds,
+    ROUND(SUM(CASE WHEN t.sla_breach_detected THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS sla_breach_rate_pct
+FROM order_kpt_telemetry t
+JOIN food_orders o ON t.order_id = o.order_id
+JOIN merchants m ON o.merchant_id = m.merchant_id
+WHERE t.created_at >= CURRENT_DATE - INTERVAL '7 days'
+GROUP BY m.trade_name
+HAVING COUNT(t.order_id) >= 50
+ORDER BY avg_captain_dwell_seconds DESC;`,
+
+      q3: `-- Query 3: Captain Dual-Mode Earnings Yield (Interleaved vs. Siloed)
+SELECT 
+    c.captain_id,
+    c.full_name,
+    COUNT(DISTINCT CASE WHEN cml.target_mode IS NOT NULL THEN DATE_TRUNC('day', cml.transition_timestamp) END) AS days_operating_dual_mode,
+    SUM(o.captain_payout_net_paise) / 100.0 AS total_food_earnings_inr,
+    c.lifetime_completed_rides * 68.50 AS estimated_mobility_earnings_inr,
+    ROUND(c.hourly_earnings_yield_inr, 2) AS current_hourly_yield_inr,
+    CASE 
+        WHEN c.has_qlp_hardware AND COUNT(cml.log_id) > 10 THEN 'DUAL_MODE_INTERLEAVED'
+        ELSE 'MONO_MODE_SILOED'
+    END AS fleet_cohort
+FROM captains c
+LEFT JOIN food_orders o ON c.captain_id = o.captain_id AND o.order_status = 'DELIVERED'
+LEFT JOIN captain_mode_logs cml ON c.captain_id = cml.captain_id
+WHERE c.is_online IS TRUE
+GROUP BY c.captain_id, c.full_name, c.lifetime_completed_rides, c.hourly_earnings_yield_inr, c.has_qlp_hardware
+ORDER BY current_hourly_yield_inr DESC
+LIMIT 100;`,
+
+      q4: `-- Query 4: NRAI Merchant Dine-In Price Parity Audit
+SELECT 
+    m.merchant_id,
+    m.trade_name,
+    m.nrai_membership_id,
+    COUNT(i.item_id) AS total_synced_items,
+    SUM(CASE WHEN i.delivery_price_paise > i.dine_in_price_paise THEN 1 ELSE 0 END) AS marked_up_items_count,
+    ROUND(AVG((i.delivery_price_paise - i.dine_in_price_paise)::NUMERIC / NULLIF(i.dine_in_price_paise, 0)) * 100.0, 2) AS avg_markup_percentage,
+    CASE 
+        WHEN SUM(CASE WHEN i.delivery_price_paise > i.dine_in_price_paise THEN 1 ELSE 0 END) = 0 THEN '100% PARITY CERTIFIED'
+        ELSE 'PARITY VIOLATION SUSPECT'
+    END AS audit_status
+FROM merchants m
+JOIN merchant_menu_items i ON m.merchant_id = i.merchant_id
+WHERE m.active_status = 'ACTIVE'
+GROUP BY m.merchant_id, m.trade_name, m.nrai_membership_id
+ORDER BY marked_up_items_count DESC;`,
+
+      q5: `-- Query 5: Automated SLA 60-Second Recovery & Delay Micro-Credit Audit
+SELECT 
+    DATE_TRUNC('day', t.created_at) AS event_day,
+    m.trade_name,
+    COUNT(t.telemetry_id) AS total_prepared_orders,
+    SUM(CASE WHEN t.sla_breach_detected THEN 1 ELSE 0 END) AS breach_incident_count,
+    ROUND(SUM(CASE WHEN t.sla_breach_detected THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS breach_rate_pct,
+    SUM(t.sla_recovery_credit_issued_paise) / 100.0 AS total_customer_credits_disbursed_inr,
+    SUM(GREATEST(0, (t.captain_pickup_dwell_seconds - 60) * 5)) / 100.0 AS total_captain_wait_pay_disbursed_inr,
+    ROUND(AVG(t.captain_pickup_dwell_seconds), 1) AS avg_captain_dwell_seconds
+FROM order_kpt_telemetry t
+JOIN food_orders o ON t.order_id = o.order_id
+JOIN merchants m ON o.merchant_id = m.merchant_id
+WHERE t.created_at >= CURRENT_DATE - INTERVAL '14 days'
+GROUP BY 1, 2
+HAVING SUM(CASE WHEN t.sla_breach_detected THEN 1 ELSE 0 END) > 0
+ORDER BY breach_incident_count DESC;`
+    };
+
+    let currentSqlId = 'q1';
+
+    function showSqlQuery(id) {
+      currentSqlId = id;
+      document.getElementById('sql-code-block').innerText = sqlQueries[id];
+
+      document.querySelectorAll('.sql-tab-btn').forEach(btn => {
+        btn.className = "sql-tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slateText hover:text-white transition-all";
+      });
+
+      const activeBtn = document.getElementById('tab-' + id);
+      if (activeBtn) {
+        activeBtn.className = "sql-tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-ownlyPink text-white transition-all shadow-sm shadow-pink-900/30";
+      }
+    }
+
+    function copyCurrentSql() {
+      const code = sqlQueries[currentSqlId];
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(() => {
+          showToast("SQL Query successfully copied to clipboard!");
+        }).catch(() => {
+          fallbackCopy(code);
+        });
+      } else {
+        fallbackCopy(code);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        showToast("SQL Query successfully copied to clipboard!");
+      } catch (e) {
+        showToast("Please copy SQL query manually from screen");
+      }
+      document.body.removeChild(ta);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-msg');
+      toastMsg.innerText = msg;
+
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 2500);
+    }
+
+    // 6. Roadmap Progress Tracker with Dynamic Conic Gradient Ring
+    function updateRoadmapProgress() {
+      const cbs = document.querySelectorAll('.roadmap-cb');
+      let checked = 0;
+      cbs.forEach(cb => {
+        if (cb.checked) checked++;
+      });
+
+      const total = cbs.length;
+      const pct = Math.round((checked / total) * 100);
+
+      document.getElementById('progress-percent').innerText = pct + '% Complete';
+      document.getElementById('progress-num').innerText = checked + '/' + total;
+
+      const ring = document.getElementById('progress-ring');
+      if (ring) {
+        const deg = Math.round(pct * 3.6);
+        ring.style.background = `conic-gradient(#FF1E6A ${deg}deg, #222838 ${deg}deg 360deg)`;
+      }
+    }
+  </script>
+</body>
+</html>
